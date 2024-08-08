@@ -1,0 +1,65 @@
+{
+  "name": "intake-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "nodemon --watch src -e ts,tsx --exec ts-node index.ts",
+    "start": "GIT_SHA=$(git rev-parse HEAD) GIT_SHA_TS=$(git log -1 --format=%ai) node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafaewaqarqazi/intake-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rafaewaqarqazi/intake-api/issues"
+  },
+  "homepage": "https://github.com/rafaewaqarqazi/intake-api#readme",
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/koa": "^2.15.0",
+    "@types/koa__cors": "^5.0.0",
+    "@types/koa__router": "^12.0.4",
+    "@types/koa-bodyparser": "^4.3.12",
+    "@types/koa-useragent": "^2.1.2",
+    "@types/node": "^22.1.0",
+    "@types/nodemailer": "^6.4.15",
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.3",
+    "tslint": "^6.1.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.626.0",
+    "@koa/cors": "^5.0.0",
+    "@koa/router": "^12.0.1",
+    "axios": "^1.7.3",
+    "concurrently": "^8.2.2",
+    "cron": "^3.1.7",
+    "dotenv": "^16.4.5",
+    "handlebars": "^4.7.8",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "koa": "^2.15.3",
+    "koa-body": "^6.0.1",
+    "koa-bodyparser": "^4.4.1",
+    "koa-helmet": "^7.0.2",
+    "koa-swagger-decorator": "^1.8.7",
+    "koa-useragent": "^4.1.0",
+    "dayjs": "^1.11.12",
+    "mysql": "^2.18.1",
+    "mysql-import": "^5.0.26",
+    "nodemailer": "^6.9.14",
+    "path": "^0.12.7",
+    "reflect-metadata": "^0.2.2",
+    "sitemapper": "^3.2.9",
+    "typeorm": "^0.3.20",
+    "typescript": "^5.5.4",
+    "winston": "^3.14.0"
+  },
+  "prettier": {
+    "singleQuote": true
+  }
+}
