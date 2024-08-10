@@ -1,0 +1,12 @@
+export enum statusEnums {
+  ACTIVE = 1,
+  IN_ACTIVE,
+  STARTED,
+  EXPIRED,
+  ARCHIVE,
+  REFUNDED,
+  DELETED,
+  COMPLETED,
+  VIEWED,
+  IN_PROGRESS,
+}
