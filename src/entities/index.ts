@@ -15,6 +15,10 @@ import { Schedule } from './schedule';
 import { TextMessage } from './textMessage';
 import { EmailMessage } from './emailMessage';
 import { Referral } from './referral';
+import { Campaign } from './campaign';
+import { Coupon } from './coupon';
+import { Offer } from './offer';
+import { QuoteService } from './quote.service';
 export const entities = [
   Customer,
   Employee,
@@ -33,4 +37,8 @@ export const entities = [
   TextMessage,
   EmailMessage,
   Referral,
+  Campaign,
+  Coupon,
+  Offer,
+  QuoteService,
 ];
