@@ -6,7 +6,7 @@
   "scripts": {
     "tsc": "tsc",
     "dev": "nodemon --watch src -e ts,tsx --exec ts-node index.ts",
-    "start": "GIT_SHA=$(git rev-parse HEAD) GIT_SHA_TS=$(git log -1 --format=%ai) node dist/index.js"
+    "start:intake": "GIT_SHA=$(git rev-parse HEAD) GIT_SHA_TS=$(git log -1 --format=%ai) node dist/index.js"
   },
   "repository": {
     "type": "git",

@@ -19,7 +19,7 @@ jobs:
             git pull
             npm i
             NODE_OPTIONS='--max-old-space-size=8192' npm run tsc
-            pm2 restart 'npm start'
+            pm2 restart 'npm start:intake'
       - name: Check API Status
         uses: appleboy/ssh-action@master
         env:
@@ -35,6 +35,6 @@ jobs:
               echo "Application is healthy."
             else
               echo "Application is not healthy."
-              pm2 stop 'npm start'
+              pm2 stop 'npm start:intake'
               exit 1
             fi
