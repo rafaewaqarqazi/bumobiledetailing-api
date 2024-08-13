@@ -5,30 +5,30 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import Joi from 'joi';
+import { Package } from './package';
+import { ServiceAddOn } from './service.addOn';
 @Entity()
-class Admin extends BaseEntity {
+class PackageAddOn extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
   @Column({ nullable: false })
-  firstName: string;
+  name: string;
 
   @Column({ nullable: false })
-  lastName: string;
+  price: string;
 
-  @Column({ nullable: false, unique: true })
-  email: string;
+  @ManyToOne(() => Package, (_package) => _package.packageAddOns, {
+    onDelete: 'CASCADE',
+  })
+  package: Package;
 
-  @Column({ nullable: false, select: false })
-  password: string;
-
-  @Column({ nullable: false })
-  statusId: number;
-
-  @Column({ nullable: true, type: 'datetime' })
-  passResetAt: Date;
+  @OneToMany(() => ServiceAddOn, (serviceAddOn) => serviceAddOn.packageAddOn)
+  serviceAddOns: ServiceAddOn[];
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -50,10 +50,9 @@ class Admin extends BaseEntity {
 }
 
 // Validation Schema
-const adminSchema = Joi.object({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string(),
+const packageAddOnSchema = Joi.object({
+  name: Joi.string().required(),
+  price: Joi.string().required(),
+  package: Joi.number().required(),
 });
-export { Admin, adminSchema };
+export { PackageAddOn, packageAddOnSchema };

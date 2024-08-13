@@ -5,30 +5,33 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import Joi from 'joi';
+import { Customer } from './customer';
+import { Payment } from './payment';
 @Entity()
-class Admin extends BaseEntity {
+class CreditCard extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
   @Column({ nullable: false })
-  firstName: string;
+  cardType: string;
 
   @Column({ nullable: false })
-  lastName: string;
-
-  @Column({ nullable: false, unique: true })
-  email: string;
-
-  @Column({ nullable: false, select: false })
-  password: string;
+  last4Digits: string;
 
   @Column({ nullable: false })
-  statusId: number;
+  expiry: string;
 
-  @Column({ nullable: true, type: 'datetime' })
-  passResetAt: Date;
+  @ManyToOne(() => Customer, (customer) => customer.creditCards, {
+    onDelete: 'CASCADE',
+  })
+  customer: Customer;
+
+  @OneToMany(() => Payment, (payment) => payment.creditCard)
+  payments: Payment[];
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -50,10 +53,10 @@ class Admin extends BaseEntity {
 }
 
 // Validation Schema
-const adminSchema = Joi.object({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string(),
+const creditCardSchema = Joi.object({
+  cardType: Joi.string().required(),
+  last4Digits: Joi.string().required(),
+  expiry: Joi.string().required(),
+  customer: Joi.number().required(),
 });
-export { Admin, adminSchema };
+export { CreditCard, creditCardSchema };

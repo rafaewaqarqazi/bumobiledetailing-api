@@ -8,27 +8,15 @@ import {
 } from 'typeorm';
 import Joi from 'joi';
 @Entity()
-class Admin extends BaseEntity {
+class ServiceCategory extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
   @Column({ nullable: false })
-  firstName: string;
+  name: string;
 
-  @Column({ nullable: false })
-  lastName: string;
-
-  @Column({ nullable: false, unique: true })
-  email: string;
-
-  @Column({ nullable: false, select: false })
-  password: string;
-
-  @Column({ nullable: false })
-  statusId: number;
-
-  @Column({ nullable: true, type: 'datetime' })
-  passResetAt: Date;
+  @Column({ nullable: true })
+  description: string;
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -50,10 +38,8 @@ class Admin extends BaseEntity {
 }
 
 // Validation Schema
-const adminSchema = Joi.object({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string(),
+const serviceCategorySchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string(),
 });
-export { Admin, adminSchema };
+export { ServiceCategory, serviceCategorySchema };

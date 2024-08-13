@@ -5,30 +5,26 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
+  OneToMany,
 } from 'typeorm';
 import Joi from 'joi';
+import { PackageAddOn } from './package.addOn';
 @Entity()
-class Admin extends BaseEntity {
+class Package extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
   @Column({ nullable: false })
-  firstName: string;
+  name: string;
 
   @Column({ nullable: false })
-  lastName: string;
-
-  @Column({ nullable: false, unique: true })
-  email: string;
-
-  @Column({ nullable: false, select: false })
-  password: string;
+  description: string;
 
   @Column({ nullable: false })
-  statusId: number;
+  price: string;
 
-  @Column({ nullable: true, type: 'datetime' })
-  passResetAt: Date;
+  @OneToMany(() => PackageAddOn, (packageAddOn) => packageAddOn.package)
+  packageAddOns: PackageAddOn[];
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -50,10 +46,9 @@ class Admin extends BaseEntity {
 }
 
 // Validation Schema
-const adminSchema = Joi.object({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string(),
+const packageSchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+  price: Joi.string().required(),
 });
-export { Admin, adminSchema };
+export { Package, packageSchema };

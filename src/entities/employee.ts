@@ -5,10 +5,14 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
+  OneToMany,
 } from 'typeorm';
 import Joi from 'joi';
+import { EmployeePositions } from '../enums/employeePositions';
+import { ServiceAssignment } from './service.assignment';
+import { Schedule } from './schedule';
 @Entity()
-class Admin extends BaseEntity {
+class Employee extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
@@ -21,14 +25,29 @@ class Admin extends BaseEntity {
   @Column({ nullable: false, unique: true })
   email: string;
 
+  @Column({ nullable: true })
+  phone: string;
+
   @Column({ nullable: false, select: false })
   password: string;
+
+  @Column({ nullable: true })
+  position: EmployeePositions;
 
   @Column({ nullable: false })
   statusId: number;
 
   @Column({ nullable: true, type: 'datetime' })
   passResetAt: Date;
+
+  @OneToMany(
+    () => ServiceAssignment,
+    (serviceAssignment) => serviceAssignment.employee,
+  )
+  serviceAssignments: ServiceAssignment[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.employee)
+  schedules: Schedule[];
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -50,10 +69,11 @@ class Admin extends BaseEntity {
 }
 
 // Validation Schema
-const adminSchema = Joi.object({
+const employeeSchema = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   email: Joi.string().email().required(),
+  phone: Joi.string().required(),
   password: Joi.string(),
 });
-export { Admin, adminSchema };
+export { Employee, employeeSchema };

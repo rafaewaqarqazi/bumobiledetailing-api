@@ -5,30 +5,34 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
+  ManyToOne,
 } from 'typeorm';
 import Joi from 'joi';
+import { Customer } from './customer';
+import { Vehicle } from './vehicle';
 @Entity()
-class Admin extends BaseEntity {
+class Quote extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ nullable: false })
-  firstName: string;
+  @Column({ nullable: false, type: 'datetime' })
+  quoteDate: Date;
 
   @Column({ nullable: false })
-  lastName: string;
-
-  @Column({ nullable: false, unique: true })
-  email: string;
-
-  @Column({ nullable: false, select: false })
-  password: string;
+  quotedAmount: string;
 
   @Column({ nullable: false })
   statusId: number;
 
-  @Column({ nullable: true, type: 'datetime' })
-  passResetAt: Date;
+  @ManyToOne(() => Customer, (customer) => customer.quotes, {
+    onDelete: 'CASCADE',
+  })
+  customer: Customer;
+
+  @ManyToOne(() => Vehicle, (vehicle) => vehicle.quotes, {
+    onDelete: 'CASCADE',
+  })
+  vehicle: Vehicle;
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -50,10 +54,9 @@ class Admin extends BaseEntity {
 }
 
 // Validation Schema
-const adminSchema = Joi.object({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string(),
+const quoteSchema = Joi.object({
+  quoteDate: Joi.date().required(),
+  quotedAmount: Joi.string().required(),
+  statusId: Joi.number().required(),
 });
-export { Admin, adminSchema };
+export { Quote, quoteSchema };

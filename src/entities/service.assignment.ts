@@ -5,31 +5,25 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
+  ManyToOne,
 } from 'typeorm';
 import Joi from 'joi';
+import { Service } from './service';
+import { Employee } from './employee';
 @Entity()
-class Admin extends BaseEntity {
+class ServiceAssignment extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ nullable: false })
-  firstName: string;
+  @ManyToOne(() => Service, (service) => service.serviceAssignments, {
+    onDelete: 'CASCADE',
+  })
+  service: Service;
 
-  @Column({ nullable: false })
-  lastName: string;
-
-  @Column({ nullable: false, unique: true })
-  email: string;
-
-  @Column({ nullable: false, select: false })
-  password: string;
-
-  @Column({ nullable: false })
-  statusId: number;
-
-  @Column({ nullable: true, type: 'datetime' })
-  passResetAt: Date;
-
+  @ManyToOne(() => Employee, (employee) => employee.serviceAssignments, {
+    onDelete: 'CASCADE',
+  })
+  employee: Employee;
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
   createdAt: Date;
@@ -50,10 +44,8 @@ class Admin extends BaseEntity {
 }
 
 // Validation Schema
-const adminSchema = Joi.object({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string(),
+const serviceAddOnSchema = Joi.object({
+  service: Joi.number().required(),
+  employee: Joi.number().required(),
 });
-export { Admin, adminSchema };
+export { ServiceAssignment, serviceAddOnSchema };
