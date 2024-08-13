@@ -1,0 +1,40 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Intake API
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          key: ${{secrets.SSH_KEY}}
+          username: root
+          script: |
+            cd /intake/intake-api
+            git pull
+            npm i
+            NODE_OPTIONS='--max-old-space-size=8192' npm run tsc
+            pm2 restart 'npm start'
+      - name: Check API Status
+        uses: appleboy/ssh-action@master
+        env:
+          API_URL: ${{secrets.API_URL}}
+        with:
+          host: ${{secrets.SSH_HOST}}
+          key: ${{secrets.SSH_KEY}}
+          username: root
+          envs: API_URL
+          script: |
+            sleep 15
+            if curl --fail $API_URL/api/status; then
+              echo "Application is healthy."
+            else
+              echo "Application is not healthy."
+              pm2 stop 'npm start'
+              exit 1
+            fi
