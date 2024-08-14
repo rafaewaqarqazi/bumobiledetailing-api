@@ -11,6 +11,8 @@ import { Customer } from '../../entities/customer';
 import { Roles } from '../../enums/roles';
 import { Admin } from '../../entities/admin';
 import { AdminRepository } from '../../repositories/admin.repository';
+import { Employee } from '../../entities/employee';
+import { EmployeeRepository } from '../../repositories/employee.repository';
 
 @tagsAll(['Auth'])
 export default class AuthController {
@@ -36,7 +38,7 @@ export default class AuthController {
         return new Response(
           ctx,
           responseCodeEnums.BAD_REQUEST,
-          'Incorrect Email or password'
+          'Incorrect Email or password',
         );
       }
       const accessToken: string = jwt.sign(
@@ -44,7 +46,7 @@ export default class AuthController {
         process.env.SECRET, // Token Secret that we sign it with
         {
           expiresIn: body.remember ? '1 year' : '2 days', // Token Expire time
-        }
+        },
       );
       return new Response(
         ctx,
@@ -57,7 +59,7 @@ export default class AuthController {
           email: user.email,
           role: Roles.CUSTOMER,
           accessToken,
-        }
+        },
       );
     } catch (err) {
       winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
@@ -65,7 +67,7 @@ export default class AuthController {
         ctx,
         responseCodeEnums.BAD_REQUEST,
         err.message || 'Something went wrong',
-        err
+        err,
       );
     }
   }
@@ -91,7 +93,7 @@ export default class AuthController {
         return new Response(
           ctx,
           responseCodeEnums.BAD_REQUEST,
-          'Incorrect Email or password'
+          'Incorrect Email or password',
         );
       }
       const accessToken: string = jwt.sign(
@@ -99,7 +101,7 @@ export default class AuthController {
         process.env.SECRET, // Token Secret that we sign it with
         {
           expiresIn: body.remember ? '1 year' : '2 days', // Token Expire time
-        }
+        },
       );
       return new Response(
         ctx,
@@ -112,7 +114,7 @@ export default class AuthController {
           email: admin.email,
           role: Roles.ADMIN,
           accessToken,
-        }
+        },
       );
     } catch (err) {
       winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
@@ -120,7 +122,62 @@ export default class AuthController {
         ctx,
         responseCodeEnums.BAD_REQUEST,
         err.message || 'Something went wrong',
-        err
+        err,
+      );
+    }
+  }
+  @request('post', '/login-employee')
+  @summary('Employee Login')
+  @body({
+    email: { type: 'string', required: true },
+    password: { type: 'string', required: true },
+    remember: { type: 'boolean', required: false },
+  })
+  public static async loginEmployee(ctx: Context) {
+    try {
+      const schema: any = Joi.object({
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+        remember: Joi.boolean().optional(),
+      });
+      await schema.validateAsync(ctx.request.body);
+      const body = ctx.request.body as Employee & { remember: boolean };
+      const admin = await EmployeeRepository.findByEmail(body.email);
+
+      if (!bcrypt.compareSync(body.password, admin.password)) {
+        return new Response(
+          ctx,
+          responseCodeEnums.BAD_REQUEST,
+          'Incorrect Email or password',
+        );
+      }
+      const accessToken: string = jwt.sign(
+        { id: admin.id, email: admin.email, role: Roles.EMPLOYEE },
+        process.env.SECRET, // Token Secret that we sign it with
+        {
+          expiresIn: body.remember ? '1 year' : '2 days', // Token Expire time
+        },
+      );
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Logged in successfully',
+        {
+          id: admin.id,
+          firstName: admin.firstName,
+          lastName: admin.lastName,
+          email: admin.email,
+          role: Roles.EMPLOYEE,
+          accessToken,
+        },
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
       );
     }
   }
@@ -147,7 +204,7 @@ export default class AuthController {
         ctx,
         responseCodeEnums.SUCCESS,
         'Customer created successfully',
-        user
+        user,
       );
     } catch (err) {
       winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
@@ -155,7 +212,42 @@ export default class AuthController {
         ctx,
         responseCodeEnums.BAD_REQUEST,
         err.message || 'Something went wrong',
-        err
+        err,
+      );
+    }
+  }
+  @request('post', '/signup-admin')
+  @summary('Signup')
+  @body({
+    firstName: { type: 'string', required: true },
+    lastName: { type: 'string', required: true },
+    email: { type: 'string', required: true },
+    password: { type: 'string', required: true },
+  })
+  public static async signupAdmin(ctx: Context) {
+    try {
+      const schema: any = Joi.object({
+        firstName: Joi.string().required(),
+        lastName: Joi.string().required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+      });
+      await schema.validateAsync(ctx.request.body);
+      const body = ctx.request.body as Admin;
+      const user = await AdminRepository.createAdmin(body);
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Admin created successfully',
+        user,
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
       );
     }
   }

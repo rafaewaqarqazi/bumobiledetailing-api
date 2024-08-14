@@ -19,7 +19,9 @@ import { Campaign } from './campaign';
 import { Coupon } from './coupon';
 import { Offer } from './offer';
 import { QuoteService } from './quote.service';
+import { Admin } from './admin';
 export const entities = [
+  Admin,
   Customer,
   Employee,
   Quote,
