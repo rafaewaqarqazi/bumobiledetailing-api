@@ -1,6 +1,6 @@
-# Intake API
+# BU Mobile Detailing API
 
-This is a Koa API server for the Intake App.
+This is a Koa API server for the BU Mobile Detailing App.
 
 ## Getting Started
 
