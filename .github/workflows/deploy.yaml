@@ -8,18 +8,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy Intake API
+      - name: Deploy BU Mobile Detailing API
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.SSH_HOST}}
           key: ${{secrets.SSH_KEY}}
           username: root
           script: |
-            cd /intake/intake-api
+            cd /bumd/bumd-api
             git pull
             npm i
             NODE_OPTIONS='--max-old-space-size=8192' npm run tsc
-            pm2 restart 'npm run start:intake'
+            pm2 restart 'npm run start:bumd'
       - name: Check API Status
         uses: appleboy/ssh-action@master
         env:
@@ -35,6 +35,6 @@ jobs:
               echo "Application is healthy."
             else
               echo "Application is not healthy."
-              pm2 stop 'npm run start:intake'
+              pm2 stop 'npm run start:bumd'
               exit 1
             fi

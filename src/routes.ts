@@ -7,7 +7,7 @@ AuthRouter.definingAuthRoutes(router);
 
 // Swagger endpoint
 router.swagger({
-  title: 'Intake API',
+  title: 'BU Mobile Detailing API',
   version: '1.0.0',
   prefix: '/api',
   swaggerHtmlEndpoint: '/swagger-html',

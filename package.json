@@ -1,23 +1,23 @@
 {
-  "name": "intake-api",
+  "name": "bumobiledetailing-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
     "dev": "nodemon --watch src -e ts,tsx --exec ts-node index.ts",
-    "start:intake": "GIT_SHA=$(git rev-parse HEAD) GIT_SHA_TS=$(git log -1 --format=%ai) node dist/index.js"
+    "start:bumd": "GIT_SHA=$(git rev-parse HEAD) GIT_SHA_TS=$(git log -1 --format=%ai) node dist/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rafaewaqarqazi/intake-api.git"
+    "url": "git+https://github.com/rafaewaqarqazi/bumobiledetailing-api.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rafaewaqarqazi/intake-api/issues"
+    "url": "https://github.com/rafaewaqarqazi/bumobiledetailing-api/issues"
   },
-  "homepage": "https://github.com/rafaewaqarqazi/intake-api#readme",
+  "homepage": "https://github.com/rafaewaqarqazi/bumobiledetailing-api#readme",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
