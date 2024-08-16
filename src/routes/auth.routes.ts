@@ -7,7 +7,6 @@ export default class AuthRouter {
     router.post('/auth/login-employee', AuthController.loginEmployee);
     router.post('/auth/signup', AuthController.signup);
     router.post('/auth/signup-admin', AuthController.signupAdmin);
-    // router.post('/auth/signup-employee', AuthController.signupEmployee);
     router.post('/auth/forgot-password', AuthController.forgotPassword);
     router.post('/auth/reset-password', AuthController.resetPassword);
   }

@@ -129,6 +129,45 @@ export const EmployeeRepository = AppDataSource?.getRepository(Employee).extend(
 
       return employee;
     },
+    async list({
+      current,
+      pageSize,
+      queryString,
+      position,
+      statusId,
+    }: {
+      current?: number;
+      pageSize?: number;
+      queryString?: string;
+      position?: string;
+      statusId?: number;
+    }): Promise<[Employee[], number]> {
+      const query = this.createQueryBuilder('employee')
+        .leftJoinAndSelect('employee.serviceAssignments', 'serviceAssignments')
+        .leftJoinAndSelect('employee.schedules', 'schedules');
+      if (queryString) {
+        query.andWhere(
+          `(employee.firstName like :queryString 
+          or employee.lastName like :queryString 
+          or employee.email like :queryString 
+          or employee.phone like :queryString
+        )`,
+          {
+            queryString: `%${queryString}%`,
+          },
+        );
+      }
+      if (position) {
+        query.andWhere('employee.position = :position', { position });
+      }
+      if (statusId) {
+        query.andWhere('employee.statusId = :statusId', { statusId });
+      }
+      if (pageSize) {
+        query.skip((current - 1) * pageSize).take(pageSize);
+      }
+      return query.getManyAndCount();
+    },
     async deleteEmployee(id: number): Promise<number> {
       const employee = await this.findOne({
         where: {

@@ -7,9 +7,9 @@ import jwt from 'jsonwebtoken';
 import Response from '../../responses/response.handler';
 import { responseCodeEnums } from '../../enums/responseCodeEnums';
 import { CustomerRepository } from '../../repositories/customer.repository';
-import { Customer } from '../../entities/customer';
+import { Customer, customerSchema } from '../../entities/customer';
 import { Roles } from '../../enums/roles';
-import { Admin } from '../../entities/admin';
+import { Admin, adminSchema } from '../../entities/admin';
 import { AdminRepository } from '../../repositories/admin.repository';
 import { Employee } from '../../entities/employee';
 import { EmployeeRepository } from '../../repositories/employee.repository';
@@ -194,16 +194,16 @@ export default class AuthController {
     lastName: { type: 'string', required: true },
     email: { type: 'string', required: true },
     password: { type: 'string', required: true },
+    phone: { type: 'string', required: true },
+    address: { type: 'string', required: false },
+    city: { type: 'string', required: false },
+    state: { type: 'string', required: false },
+    country: { type: 'string', required: false },
+    zipCode: { type: 'string', required: false },
   })
   public static async signup(ctx: Context) {
     try {
-      const schema: any = Joi.object({
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().required(),
-      });
-      await schema.validateAsync(ctx.request.body);
+      await customerSchema.validateAsync(ctx.request.body);
       const body = ctx.request.body as Customer;
       const user = await CustomerRepository.createCustomer(body);
       return new Response(
@@ -232,13 +232,7 @@ export default class AuthController {
   })
   public static async signupAdmin(ctx: Context) {
     try {
-      const schema: any = Joi.object({
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().required(),
-      });
-      await schema.validateAsync(ctx.request.body);
+      await adminSchema.validateAsync(ctx.request.body);
       const body = ctx.request.body as Admin;
       const user = await AdminRepository.createAdmin(body);
       return new Response(
