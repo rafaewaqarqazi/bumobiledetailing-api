@@ -20,6 +20,7 @@ import { Coupon } from './coupon';
 import { Offer } from './offer';
 import { QuoteService } from './quote.service';
 import { Admin } from './admin';
+import { Preferences } from './customerPreferences';
 export const entities = [
   Admin,
   Customer,
@@ -43,4 +44,5 @@ export const entities = [
   Coupon,
   Offer,
   QuoteService,
+  Preferences,
 ];

@@ -6,6 +6,8 @@ import {
   BeforeInsert,
   BaseEntity,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import Joi from 'joi';
 import { Vehicle } from './vehicle';
@@ -15,6 +17,7 @@ import { CreditCard } from './creditCard';
 import { Feedback } from './feedback';
 import { TextMessage } from './textMessage';
 import { Referral } from './referral';
+import { Preferences } from './customerPreferences';
 @Entity()
 class Customer extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -74,6 +77,10 @@ class Customer extends BaseEntity {
   @OneToMany(() => Referral, (referral) => referral.customer)
   referrals: Referral[];
 
+  @OneToOne(() => Preferences)
+  @JoinColumn()
+  preferences: Preferences;
+
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
   createdAt: Date;
@@ -102,7 +109,9 @@ const customerSchema = Joi.object({
   address: Joi.string(),
   city: Joi.string(),
   state: Joi.string(),
+  country: Joi.string(),
   zipCode: Joi.string(),
   password: Joi.string(),
+  preferences: Joi.object(),
 });
 export { Customer, customerSchema };
