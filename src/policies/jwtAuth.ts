@@ -6,6 +6,7 @@ import { responseCodeEnums } from '../enums/responseCodeEnums';
 import Response from '../responses/response.handler';
 import { Roles } from '../enums/roles';
 import { AdminRepository } from '../repositories/admin.repository';
+import { EmployeeRepository } from '../repositories/employee.repository';
 
 export const jwtAuth = async (ctx: Context, next: any) => {
   if (!ctx.header.authorization) {
@@ -14,10 +15,15 @@ export const jwtAuth = async (ctx: Context, next: any) => {
   try {
     const decoded: any = await jwt.verify(
       ctx.header.authorization,
-      config.secret
+      config.secret,
     );
     if (decoded) {
-      const repo = decoded.role === Roles.CUSTOMER ? CustomerRepository: AdminRepository;
+      const repo =
+        decoded.role === Roles.CUSTOMER
+          ? CustomerRepository
+          : decoded.role === Roles.EMPLOYEE
+            ? EmployeeRepository
+            : AdminRepository;
       const res = await repo.findOne({
         where: {
           id: decoded.id,
@@ -27,10 +33,10 @@ export const jwtAuth = async (ctx: Context, next: any) => {
         return new Response(
           ctx,
           responseCodeEnums.UN_AUTHORIZED,
-          'Auth Missing'
+          'Auth Missing',
         );
       }
-      ctx.state.user = res;
+      ctx.state.user = { ...res, role: decoded.role };
       return next();
     } else {
       return new Response(ctx, responseCodeEnums.UN_AUTHORIZED, 'Auth Missing');
@@ -40,7 +46,7 @@ export const jwtAuth = async (ctx: Context, next: any) => {
       ctx,
       responseCodeEnums.UN_AUTHORIZED,
       'Auth token expired',
-      err
+      err,
     );
   }
 };

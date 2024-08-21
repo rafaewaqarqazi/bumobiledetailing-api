@@ -5,18 +5,25 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
+  ManyToOne,
 } from 'typeorm';
 import Joi from 'joi';
+import { Package } from './package';
+import { Service } from './service';
 @Entity()
-class ServiceCategory extends BaseEntity {
+class ServicePackage extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ nullable: false })
-  name: string;
+  @ManyToOne(() => Package, (_package) => _package.id, {
+    onDelete: 'CASCADE',
+  })
+  package: Package;
 
-  @Column({ nullable: true })
-  description: string;
+  @ManyToOne(() => Service, (service) => service.id, {
+    onDelete: 'CASCADE',
+  })
+  service: Service;
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -38,8 +45,8 @@ class ServiceCategory extends BaseEntity {
 }
 
 // Validation Schema
-const serviceCategorySchema = Joi.object({
-  name: Joi.string().required(),
-  description: Joi.string(),
+const servicePackageSchema = Joi.object({
+  package: Joi.number().required(),
+  service: Joi.number().required(),
 });
-export { ServiceCategory, serviceCategorySchema };
+export { ServicePackage, servicePackageSchema };

@@ -7,8 +7,8 @@ import {
   ManyToOne,
 } from 'typeorm';
 import Joi from 'joi';
-import { Service } from './service';
 import { Employee } from './employee';
+import { CustomerService } from './customer.service';
 @Entity()
 class Schedule extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -28,10 +28,14 @@ class Schedule extends BaseEntity {
   })
   employee: Employee;
 
-  @ManyToOne(() => Service, (service) => service.schedules, {
-    onDelete: 'CASCADE',
-  })
-  service: Service;
+  @ManyToOne(
+    () => CustomerService,
+    (customerService) => customerService.schedules,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  customerService: CustomerService;
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })

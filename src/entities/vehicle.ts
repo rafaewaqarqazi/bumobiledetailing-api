@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 import Joi from 'joi';
 import { Customer } from './customer';
-import { Service } from './service';
 import { Quote } from './quote';
+import { CustomerService } from './customer.service';
 @Entity()
 class Vehicle extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -40,8 +40,11 @@ class Vehicle extends BaseEntity {
   })
   customer: Customer;
 
-  @OneToMany(() => Service, (service) => service.vehicle)
-  services: Service[];
+  @OneToMany(
+    () => CustomerService,
+    (customerService) => customerService.vehicle,
+  )
+  customerServices: CustomerService[];
 
   @OneToMany(() => Quote, (quote) => quote.vehicle)
   quotes: Quote[];

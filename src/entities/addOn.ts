@@ -5,12 +5,13 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
-  OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import Joi from 'joi';
-import { ServicePackage } from './servicePackage';
+import { AddOnCategory } from './addOn.category';
+
 @Entity()
-class Service extends BaseEntity {
+class AddOn extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
@@ -21,10 +22,18 @@ class Service extends BaseEntity {
   description: string;
 
   @Column({ nullable: false })
+  price: string;
+
+  @Column({ nullable: false })
+  duration: number;
+
+  @Column({ nullable: false })
   image: string;
 
-  @OneToMany(() => ServicePackage, (servicePackage) => servicePackage.service)
-  servicePackages: ServicePackage[];
+  @ManyToOne(() => AddOnCategory, (category) => category.id, {
+    onDelete: 'CASCADE',
+  })
+  category: AddOnCategory;
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -46,10 +55,12 @@ class Service extends BaseEntity {
 }
 
 // Validation Schema
-const serviceSchema = Joi.object({
+const addOnSchema = Joi.object({
   name: Joi.string().required(),
   description: Joi.string().required(),
+  price: Joi.string().required(),
+  duration: Joi.number().required(),
   image: Joi.string().required(),
-  servicePackages: Joi.array(),
+  category: Joi.number().required(),
 });
-export { Service, serviceSchema };
+export { AddOn, addOnSchema };

@@ -6,29 +6,24 @@ import {
   BeforeInsert,
   BaseEntity,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 import Joi from 'joi';
 import { Package } from './package';
-import { ServiceAddOn } from './service.addOn';
+import { AddOn } from './addOn';
 @Entity()
 class PackageAddOn extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
-
-  @Column({ nullable: false })
-  name: string;
-
-  @Column({ nullable: false })
-  price: string;
 
   @ManyToOne(() => Package, (_package) => _package.packageAddOns, {
     onDelete: 'CASCADE',
   })
   package: Package;
 
-  @OneToMany(() => ServiceAddOn, (serviceAddOn) => serviceAddOn.packageAddOn)
-  serviceAddOns: ServiceAddOn[];
+  @ManyToOne(() => AddOn, (addOn) => addOn.id, {
+    onDelete: 'CASCADE',
+  })
+  addOn: AddOn;
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })

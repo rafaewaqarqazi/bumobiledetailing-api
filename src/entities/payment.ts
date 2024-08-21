@@ -7,8 +7,8 @@ import {
   ManyToOne,
 } from 'typeorm';
 import Joi from 'joi';
-import { Service } from './service';
 import { CreditCard } from './creditCard';
+import { CustomerService } from './customer.service';
 @Entity()
 class Payment extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -23,10 +23,14 @@ class Payment extends BaseEntity {
   @Column({ nullable: false })
   statusId: number;
 
-  @ManyToOne(() => Service, (service) => service.payments, {
-    onDelete: 'CASCADE',
-  })
-  service: Service;
+  @ManyToOne(
+    () => CustomerService,
+    (customerService) => customerService.payments,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  customerService: CustomerService;
 
   @ManyToOne(() => CreditCard, (creditCard) => creditCard.payments, {
     onDelete: 'CASCADE',

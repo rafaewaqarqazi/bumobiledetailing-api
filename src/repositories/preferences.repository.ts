@@ -51,7 +51,7 @@ export const PreferencesRepository = AppDataSource?.getRepository(
     if (!exists) {
       throw new NotFoundError('Preferences not found!');
     }
-
-    return this.save(preferencesObj);
+    this.merge(exists, preferencesObj);
+    return this.save(exists);
   },
 });

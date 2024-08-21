@@ -8,17 +8,21 @@ import {
   ManyToOne,
 } from 'typeorm';
 import Joi from 'joi';
-import { Service } from './service';
 import { Employee } from './employee';
+import { CustomerService } from './customer.service';
 @Entity()
 class ServiceAssignment extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @ManyToOne(() => Service, (service) => service.serviceAssignments, {
-    onDelete: 'CASCADE',
-  })
-  service: Service;
+  @ManyToOne(
+    () => CustomerService,
+    (customerService) => customerService.serviceAssignments,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  customerService: CustomerService;
 
   @ManyToOne(() => Employee, (employee) => employee.serviceAssignments, {
     onDelete: 'CASCADE',
@@ -45,7 +49,7 @@ class ServiceAssignment extends BaseEntity {
 
 // Validation Schema
 const serviceAddOnSchema = Joi.object({
-  service: Joi.number().required(),
   employee: Joi.number().required(),
+  customerService: Joi.number().required(),
 });
 export { ServiceAssignment, serviceAddOnSchema };

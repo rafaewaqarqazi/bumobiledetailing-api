@@ -13,7 +13,7 @@ export const adminAuth = async (ctx: Context, next: any) => {
     return new Response(
       ctx,
       responseCodeEnums.UN_AUTHORIZED,
-      'Not authorized!'
+      'Not authorized!',
     );
   }
 

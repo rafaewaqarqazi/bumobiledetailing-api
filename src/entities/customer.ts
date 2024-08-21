@@ -11,13 +11,13 @@ import {
 } from 'typeorm';
 import Joi from 'joi';
 import { Vehicle } from './vehicle';
-import { Service } from './service';
 import { Quote } from './quote';
 import { CreditCard } from './creditCard';
 import { Feedback } from './feedback';
 import { TextMessage } from './textMessage';
 import { Referral } from './referral';
 import { Preferences } from './customerPreferences';
+import { CustomerService } from './customer.service';
 @Entity()
 class Customer extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -59,8 +59,11 @@ class Customer extends BaseEntity {
   @OneToMany(() => Vehicle, (vehicle) => vehicle.customer)
   vehicles: Vehicle[];
 
-  @OneToMany(() => Service, (service) => service.customer)
-  services: Service[];
+  @OneToMany(
+    () => CustomerService,
+    (customerService) => customerService.customer,
+  )
+  customerServices: CustomerService[];
 
   @OneToMany(() => Quote, (quote) => quote.customer)
   quotes: Quote[];

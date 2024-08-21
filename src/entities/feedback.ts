@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import Joi from 'joi';
 import { Customer } from './customer';
-import { Service } from './service';
+import { CustomerService } from './customer.service';
 @Entity()
 class Feedback extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -25,10 +25,10 @@ class Feedback extends BaseEntity {
   })
   customer: Customer;
 
-  @ManyToOne(() => Service, (service) => service.feedbacks, {
+  @ManyToOne(() => CustomerService, (customerService) => customerService.id, {
     onDelete: 'CASCADE',
   })
-  service: Service;
+  service: CustomerService;
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
