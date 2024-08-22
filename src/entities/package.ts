@@ -29,9 +29,6 @@ class Package extends BaseEntity {
   @Column({ nullable: false })
   image: string;
 
-  @Column({ nullable: false })
-  isPopular: boolean;
-
   @OneToMany(() => PackageAddOn, (packageAddOn) => packageAddOn.package)
   packageAddOns: PackageAddOn[];
 
@@ -61,7 +58,6 @@ const packageSchema = Joi.object({
   price: Joi.string().required(),
   packageAddOns: Joi.array(),
   image: Joi.string().required(),
-  isPopular: Joi.boolean(),
   displayName: Joi.string().required(),
 });
 export { Package, packageSchema };

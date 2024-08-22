@@ -47,4 +47,19 @@ export const ServicePackageRepository = AppDataSource.getRepository(
     }
     await this.remove(servicePackage);
   },
+  async updateServicePackage(
+    id: number,
+    servicePackageObj: Partial<ServicePackage>,
+  ): Promise<ServicePackage> {
+    const exists: ServicePackage = await this.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!exists) {
+      throw new BadRequestError('Service Package not found!');
+    }
+    this.merge(exists, servicePackageObj);
+    return await this.save(exists);
+  },
 });

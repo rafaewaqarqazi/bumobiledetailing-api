@@ -82,14 +82,6 @@ export const ServiceRepository = AppDataSource.getRepository(Service).extend({
     }
     if (servicePackages.length) {
       for (const servicePackage of servicePackages) {
-        const existsServicePackage = existsServicePackages.some(
-          (p) =>
-            p.package.id ===
-            (servicePackage.package?.id || servicePackage.package),
-        );
-        if (existsServicePackage) {
-          continue;
-        }
         servicePackage.service = exists;
         await ServicePackageRepository.createOrUpdateServicePackage(
           servicePackage,
@@ -102,14 +94,22 @@ export const ServiceRepository = AppDataSource.getRepository(Service).extend({
     current,
     pageSize,
     queryString,
+    withAllRelations,
   }: {
     current?: number;
     pageSize?: number;
     queryString?: string;
+    withAllRelations?: boolean;
   }): Promise<[Service[], number]> {
     const query = this.createQueryBuilder('service')
       .leftJoinAndSelect('service.servicePackages', 'servicePackages')
       .leftJoinAndSelect('servicePackages.package', 'package');
+
+    if (withAllRelations) {
+      query
+        .leftJoinAndSelect('package.packageAddOns', 'packageAddOns')
+        .leftJoinAndSelect('packageAddOns.addOn', 'addOn');
+    }
     if (queryString) {
       query.where('service.name like :name', { name: `%${queryString}%` });
     }

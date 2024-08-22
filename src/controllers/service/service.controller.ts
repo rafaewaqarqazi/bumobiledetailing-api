@@ -13,6 +13,7 @@ import { responseCodeEnums } from '../../enums/responseCodeEnums';
 import { ServiceRepository } from '../../repositories/service.repository';
 import { serviceSchema } from '../../entities/service';
 import Joi from 'joi';
+import { ServicePackageRepository } from '../../repositories/service.package.repository';
 @tagsAll(['Service'])
 export default class ServiceController {
   @request('post', '/service')
@@ -42,12 +43,13 @@ export default class ServiceController {
       );
     }
   }
-  @request('get', '/service/list')
+  @request('get', '/services')
   @summary('Get All Services')
   @query({
     current: { type: 'number', required: false },
     pageSize: { type: 'number', required: false },
     queryString: { type: 'string', required: false },
+    withAllRelations: { type: 'boolean', required: false },
   })
   public static async getAllServices(ctx: Context) {
     try {
@@ -55,10 +57,12 @@ export default class ServiceController {
       const current = +query.current;
       const pageSize = +query.pageSize;
       const queryString = query.queryString as string;
+      const withAllRelations = query.withAllRelations === 'true';
       const [serviceCategories, count] = await ServiceRepository.list({
         current,
         pageSize,
         queryString,
+        withAllRelations,
       });
       return new Response(
         ctx,
@@ -145,6 +149,41 @@ export default class ServiceController {
         responseCodeEnums.SUCCESS,
         'Service deleted successfully',
         id,
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
+      );
+    }
+  }
+
+  @request('put', '/service/package/{id}')
+  @summary('Update Service Package')
+  @path({
+    id: { type: 'number', required: true },
+  })
+  @body({
+    isPopular: { type: 'boolean', required: true },
+  })
+  public static async updateServicePackage(ctx: Context) {
+    try {
+      const id = +ctx.params['id'];
+      await Joi.number().required().validateAsync(id);
+      await Joi.boolean().required().validateAsync(ctx.request.body.isPopular);
+      const servicePackage =
+        await ServicePackageRepository.updateServicePackage(
+          id,
+          ctx.request.body,
+        );
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Service Package updated successfully',
+        servicePackage,
       );
     } catch (err) {
       winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);

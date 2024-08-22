@@ -15,6 +15,9 @@ class ServicePackage extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
+  @Column({ nullable: false })
+  isPopular: boolean;
+
   @ManyToOne(() => Package, (_package) => _package.id, {
     onDelete: 'CASCADE',
   })
@@ -48,5 +51,6 @@ class ServicePackage extends BaseEntity {
 const servicePackageSchema = Joi.object({
   package: Joi.number().required(),
   service: Joi.number().required(),
+  isPopular: Joi.boolean(),
 });
 export { ServicePackage, servicePackageSchema };

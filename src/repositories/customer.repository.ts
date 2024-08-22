@@ -67,7 +67,7 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
         },
       });
       if (exists) {
-        throw new BadRequestError('Customer already exists');
+        return exists;
       }
       if (customerObj.password) {
         customerObj.password = bcrypt.hashSync(
