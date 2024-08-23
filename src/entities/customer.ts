@@ -18,6 +18,7 @@ import { TextMessage } from './textMessage';
 import { Referral } from './referral';
 import { Preferences } from './customerPreferences';
 import { CustomerService } from './customer.service';
+import { CustomerAddOn } from './customer.addOn';
 @Entity()
 class Customer extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -64,6 +65,9 @@ class Customer extends BaseEntity {
     (customerService) => customerService.customer,
   )
   customerServices: CustomerService[];
+
+  @OneToMany(() => CustomerAddOn, (customerAddOn) => customerAddOn.customer)
+  customerAddOns: CustomerAddOn[];
 
   @OneToMany(() => Quote, (quote) => quote.customer)
   quotes: Quote[];

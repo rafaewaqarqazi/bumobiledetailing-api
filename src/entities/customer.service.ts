@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import Joi from 'joi';
 import { Service } from './service';
@@ -15,6 +16,8 @@ import { Vehicle } from './vehicle';
 import { Schedule } from './schedule';
 import { ServiceAssignment } from './service.assignment';
 import { Payment } from './payment';
+import { Package } from './package';
+import { CustomerAddOn } from './customer.addOn';
 @Entity()
 class CustomerService extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -39,15 +42,25 @@ class CustomerService extends BaseEntity {
   })
   service: Service;
 
+  @ManyToOne(() => Package, (_package) => _package.id, {
+    onDelete: 'CASCADE',
+  })
+  package: Package;
+
+  @OneToMany(
+    () => CustomerAddOn,
+    (customerAddOn) => customerAddOn.customerService,
+  )
+  customerAddOns: CustomerAddOn[];
+
   @ManyToOne(() => Vehicle, (vehicle) => vehicle.customerServices, {
     onDelete: 'CASCADE',
   })
   vehicle: Vehicle;
 
-  @OneToOne(() => Schedule, (schedule) => schedule.customerService, {
-    onDelete: 'CASCADE',
-  })
-  schedules: Schedule[];
+  @OneToOne(() => Schedule, (schedule) => schedule.customerService)
+  @JoinColumn()
+  schedule: Schedule;
 
   @OneToMany(() => Payment, (payment) => payment.customerService, {
     onDelete: 'CASCADE',

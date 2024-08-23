@@ -23,6 +23,8 @@ import { Admin } from './admin';
 import { Preferences } from './customerPreferences';
 import { CustomerService } from './customer.service';
 import { ServicePackage } from './servicePackage';
+import { CustomerAddOn } from './customer.addOn';
+import { Timeslot } from './timeslot';
 export const entities = [
   Admin,
   Customer,
@@ -49,4 +51,6 @@ export const entities = [
   Preferences,
   CustomerService,
   ServicePackage,
+  CustomerAddOn,
+  Timeslot,
 ];

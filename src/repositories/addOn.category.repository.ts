@@ -6,66 +6,66 @@ export const AddOnCategoryRepository = AppDataSource?.getRepository(
   AddOnCategory,
 )?.extend({
   async createAddOnCategory(
-    serviceCategoryObj: AddOnCategory,
+    addOnCategoryObj: AddOnCategory,
   ): Promise<AddOnCategory> {
     const exists = await this.findOne({
       where: {
-        name: serviceCategoryObj.name,
+        name: addOnCategoryObj.name,
       },
     });
     if (exists) {
       throw new BadRequestError('AddOn Category already exists!');
     }
-    return this.save(serviceCategoryObj);
+    return this.save(addOnCategoryObj);
   },
   async updateAddOnCategory(
-    serviceCategoryObj: AddOnCategory,
+    addOnCategoryObj: AddOnCategory,
   ): Promise<AddOnCategory> {
-    if (!serviceCategoryObj.id) {
+    if (!addOnCategoryObj.id) {
       throw new BadRequestError('AddOn Category ID is required!');
     }
     const exists = await this.findOne({
       where: {
-        id: serviceCategoryObj.id,
+        id: addOnCategoryObj.id,
       },
     });
     if (!exists) {
       throw new BadRequestError('AddOn Category not found!');
     }
-    if (serviceCategoryObj.name !== exists.name) {
+    if (addOnCategoryObj.name !== exists.name) {
       const nameExists = await this.findOne({
         where: {
-          name: serviceCategoryObj.name,
+          name: addOnCategoryObj.name,
         },
       });
       if (nameExists) {
         throw new BadRequestError('AddOn Category already exists!');
       }
     }
-    this.merge(exists, serviceCategoryObj);
+    this.merge(exists, addOnCategoryObj);
     return this.save(exists);
   },
-  async one(serviceCategoryId: number): Promise<AddOnCategory> {
-    const serviceCategory = await this.findOne({
+  async one(addOnCategoryId: number): Promise<AddOnCategory> {
+    const addOnCategory = await this.findOne({
       where: {
-        id: serviceCategoryId,
+        id: addOnCategoryId,
       },
     });
-    if (!serviceCategory) {
+    if (!addOnCategory) {
       throw new BadRequestError('AddOn Category not found!');
     }
-    return serviceCategory;
+    return addOnCategory;
   },
-  async deleteAddOnCategory(serviceCategoryId: number): Promise<void> {
-    const serviceCategory = await this.findOne({
+  async deleteAddOnCategory(addOnCategoryId: number): Promise<void> {
+    const addOnCategory = await this.findOne({
       where: {
-        id: serviceCategoryId,
+        id: addOnCategoryId,
       },
     });
-    if (!serviceCategory) {
+    if (!addOnCategory) {
       throw new BadRequestError('AddOn Category not found!');
     }
-    await this.remove(serviceCategory);
+    await this.remove(addOnCategory);
   },
   async list({
     current,
@@ -76,15 +76,15 @@ export const AddOnCategoryRepository = AppDataSource?.getRepository(
     pageSize?: number;
     queryString?: string;
   }): Promise<[AddOnCategory[], number]> {
-    const query = this.createQueryBuilder('serviceCategory');
+    const query = this.createQueryBuilder('addOnCategory');
     if (queryString) {
-      query.where('serviceCategory.name like :queryString', {
+      query.where('addOnCategory.name like :queryString', {
         queryString: `%${queryString}%`,
       });
     }
     if (current && pageSize) {
       query.skip((current - 1) * pageSize).take(pageSize);
     }
-    return query.orderBy('serviceCategory.updatedAt', 'DESC').getManyAndCount();
+    return query.orderBy('addOnCategory.updatedAt', 'DESC').getManyAndCount();
   },
 });
