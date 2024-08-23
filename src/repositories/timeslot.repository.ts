@@ -1,6 +1,7 @@
 import { AppDataSource } from '../connection';
 import { Timeslot } from '../entities/timeslot';
 import { BadRequestError } from '../errors/badRequestError';
+import dayjs from 'dayjs';
 
 export const TimeslotRepository = AppDataSource?.getRepository(
   Timeslot,
@@ -87,11 +88,11 @@ export const TimeslotRepository = AppDataSource?.getRepository(
   },
 
   async getTimeslotsByDate(date: string): Promise<Timeslot[]> {
-    const dayOfWeek = new Date(date).getDay();
+    const dayOfWeek = dayjs(date).get('day');
     return await this.createQueryBuilder('timeslot')
-      .where(`FIND_IN_SET(${dayOfWeek}, timeslot.days)`)
-      .leftJoinAndSelect('timeslot.schedules', 'schedule')
-      .andWhere('schedule.date != :date', { date })
+      .where('timeslot.days like :dayOfWeek', { dayOfWeek: `%${dayOfWeek}%` })
+      .leftJoin('timeslot.schedules', 'schedule')
+      .andWhere('(schedule.id is null OR schedule.date != :date)', { date })
       .getMany();
   },
 });
