@@ -26,14 +26,17 @@ class Vehicle extends BaseEntity {
   @Column({ nullable: false })
   year: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   vin: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   licensePlate: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   color: string;
+
+  @Column({ nullable: false })
+  type: string;
 
   @ManyToOne(() => Customer, (customer) => customer.vehicles, {
     onDelete: 'CASCADE',

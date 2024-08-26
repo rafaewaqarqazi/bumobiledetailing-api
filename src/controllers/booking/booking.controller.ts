@@ -14,6 +14,7 @@ import handlebars from 'handlebars';
 import { titleCase } from '../../utils/helpers';
 import { config } from '../../config';
 import { CustomerRepository } from '../../repositories/customer.repository';
+import { VehicleRepository } from '../../repositories/vehicle.repository';
 @tagsAll(['Booking'])
 export default class BookingController {
   @request('post', '/booking')
@@ -25,7 +26,13 @@ export default class BookingController {
     try {
       await Joi.object({
         totalPrice: Joi.string().required(),
-        car: Joi.string().required(),
+        vehicle: Joi.object({
+          type: Joi.string().required(),
+          make: Joi.string().required(),
+          model: Joi.string().required(),
+          year: Joi.number().required(),
+          licensePlate: Joi.string().required(),
+        }).required(),
         service: Joi.number().required(),
         package: Joi.number().required(),
         timeslot: Joi.object({
@@ -37,6 +44,10 @@ export default class BookingController {
       }).validateAsync(ctx.request.body);
       const body = ctx.request.body;
       const customer = await CustomerRepository.one(body.customer);
+      const vehicle = await VehicleRepository.createOrUpdateVehicle({
+        ...body.vehicle,
+        customer: customer,
+      });
       const schedule = await ScheduleRepository.createOrUpdateSchedule({
         date: body.timeslot.date,
         timeslot: body.timeslot.timeslot,
@@ -48,6 +59,7 @@ export default class BookingController {
         customer: body.customer,
         statusId: statusEnums.ACTIVE,
         schedule: schedule,
+        vehicle: vehicle,
       });
       const customerAddOns = body.customerAddOns;
       for (const key in customerAddOns) {
@@ -84,6 +96,7 @@ export default class BookingController {
           name: addOn.addOn.name,
           quantity: addOn.quantity,
         })),
+        vehicle: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
       };
       const htmlToSend = template(replacements);
       sendEmail({
