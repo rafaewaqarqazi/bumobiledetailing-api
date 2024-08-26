@@ -11,22 +11,29 @@ import Joi from 'joi';
 import { Employee } from './employee';
 import { CustomerService } from './customer.service';
 import { Timeslot } from './timeslot';
+import { statusEnums } from '../enums/statusEnums';
+import { Customer } from './customer';
 @Entity()
 class Schedule extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ nullable: false, type: 'datetime' })
+  @Column({ nullable: true, type: 'datetime' })
   startAt: Date;
 
-  @Column({ nullable: false, type: 'datetime' })
+  @Column({ nullable: true, type: 'datetime' })
   endAt: Date;
 
   @Column({ nullable: false, type: 'date' })
   date: Date;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: statusEnums.ACTIVE })
   statusId: number;
+
+  @ManyToOne(() => Customer, (customer) => customer.schedules, {
+    onDelete: 'CASCADE',
+  })
+  customer: Customer;
 
   @ManyToOne(() => Employee, (employee) => employee.schedules, {
     onDelete: 'CASCADE',

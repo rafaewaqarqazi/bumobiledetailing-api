@@ -19,6 +19,7 @@ import { Referral } from './referral';
 import { Preferences } from './customerPreferences';
 import { CustomerService } from './customer.service';
 import { CustomerAddOn } from './customer.addOn';
+import { Schedule } from './schedule';
 @Entity()
 class Customer extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -83,6 +84,9 @@ class Customer extends BaseEntity {
 
   @OneToMany(() => Referral, (referral) => referral.customer)
   referrals: Referral[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.customer)
+  schedules: Schedule[];
 
   @OneToOne(() => Preferences)
   @JoinColumn()

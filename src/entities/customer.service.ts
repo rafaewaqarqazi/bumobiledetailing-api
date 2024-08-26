@@ -23,12 +23,6 @@ class CustomerService extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ nullable: false, type: 'datetime' })
-  startAt: Date;
-
-  @Column({ nullable: false, type: 'datetime' })
-  endAt: Date;
-
   @Column({ nullable: false })
   statusId: number;
 

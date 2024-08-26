@@ -5,12 +5,12 @@ import {
   BeforeInsert,
   BaseEntity,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 import Joi from 'joi';
 import { AddOn } from './addOn';
 import { Customer } from './customer';
 import { CustomerService } from './customer.service';
+import { statusEnums } from '../enums/statusEnums';
 @Entity()
 class CustomerAddOn extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -19,7 +19,7 @@ class CustomerAddOn extends BaseEntity {
   @Column({ nullable: false })
   quantity: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: statusEnums.ACTIVE })
   statusId: number;
 
   @ManyToOne(() => Customer, (customer) => customer.customerAddOns, {
@@ -27,7 +27,7 @@ class CustomerAddOn extends BaseEntity {
   })
   customer: Customer;
 
-  @OneToMany(
+  @ManyToOne(
     () => CustomerService,
     (customerService) => customerService.customerAddOns,
     {

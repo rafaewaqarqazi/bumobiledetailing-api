@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title></title>
+
+    <style type="text/css">
+
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Cabin, sans-serif;
+      }
+
+      * {
+        line-height: inherit;
+      }
+
+      a[x-apple-data-detectors='true'] {
+        color: inherit !important;
+        text-decoration: none !important;
+      }
+    </style>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      background-color: #ffffff;
+      color: #000000;
+    "
+  >
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+      <tr>
+        <td align="center" bgcolor="#333333" style="padding: 40px 0; background-color: #333333;">
+          <h1 style="color: #fff;">BU Mobile Detailing</h1>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="#ffffff" style="padding: 40px 30px; background-color: #ffffff;">
+          <h2>Booking Details</h2>
+          <p>Thank you for booking with BU Mobile Detailing. Here are the details of your booking:</p>
+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+              <td width="30%">Name:</td>
+              <td>{{ name }}</td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td>{{ email }}</td>
+            </tr>
+            <tr>
+              <td>Phone:</td>
+              <td>{{ phone }}</td>
+            </tr>
+            <tr>
+              <td>Address:</td>
+              <td>{{ address }}</td>
+            </tr>
+            <tr>
+              <td>Service:</td>
+              <td>{{ service }}</td>
+            </tr>
+            <tr>
+              <td>Vehicle:</td>
+              <td>{{ vehicle }}</td>
+            </tr>
+            <tr>
+              <td>Package:</td>
+              <td>{{ package }}</td>
+            </tr>
+            <tr>
+              <td>Price:</td>
+              <td>{{ price }}</td>
+            </tr>
+            <tr>
+              <td colspan="2">Add-ons:</td>
+            </tr>
+            {{#each addOns}}
+            <tr>
+              <td>{{ this.name }}</td>
+              <td>{{ this.quantity }}</td>
+            </tr>
+            {{/each}}
+            <tr>
+              <td>Schedule:</td>
+              <td>{{ schedule }}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" bgcolor="#333333" style="padding: 30px 0; background-color: #333333;">
+          <p style="color: #848484;">&copy; 2024 BU Mobile Detailing. All rights reserved.</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
