@@ -22,6 +22,7 @@ export const CustomerServiceRepository = AppDataSource.getRepository(
       .getOne();
 
     if (exists) {
+      customerServiceObj.updatedAt = new Date();
       this.merge(exists, customerServiceObj);
       return this.save(exists);
     }

@@ -74,6 +74,9 @@ class CustomerService extends BaseEntity {
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
   createdAt: Date;
 
+  @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
+  updatedAt: Date;
+
   // typeORM listeners (HOOKS)
 
   @BeforeInsert()

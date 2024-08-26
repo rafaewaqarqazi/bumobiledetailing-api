@@ -124,6 +124,7 @@ export const EmployeeRepository = AppDataSource?.getRepository(Employee).extend(
         );
         delete employeeObj.newPassword;
       }
+      employeeObj.updatedAt = new Date();
       this.merge(employee, employeeObj);
       await employee.save();
 

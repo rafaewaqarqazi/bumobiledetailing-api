@@ -139,6 +139,7 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
         );
         delete customerObj.newPassword;
       }
+      customerObj.updatedAt = new Date();
       this.merge(customer, customerObj);
       await customer.save();
 

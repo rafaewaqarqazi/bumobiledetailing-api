@@ -49,6 +49,7 @@ export const AddOnRepository = AppDataSource.getRepository(AddOn).extend({
     if (!exists) {
       throw new BadRequestError('AddOn not found!');
     }
+    addOnObj.updatedAt = new Date();
     this.merge(exists, addOnObj);
     return this.save(exists);
   },

@@ -23,6 +23,7 @@ export const CustomerAddOnRepository = AppDataSource.getRepository(
       .getOne();
 
     if (exists) {
+      customerAddOnObj.updatedAt = new Date();
       this.merge(exists, customerAddOnObj);
       return this.save(exists);
     }

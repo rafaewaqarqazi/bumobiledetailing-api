@@ -76,9 +76,10 @@ const vehicleSchema = Joi.object({
   make: Joi.string().required(),
   model: Joi.string().required(),
   year: Joi.number().required(),
-  vin: Joi.string().required(),
-  licensePlate: Joi.string().required(),
-  color: Joi.string().required(),
-  customerId: Joi.number().required(),
+  vin: Joi.string(),
+  licensePlate: Joi.string(),
+  color: Joi.string(),
+  customer: Joi.number().required(),
+  type: Joi.string().required(),
 });
 export { Vehicle, vehicleSchema };

@@ -17,6 +17,7 @@ export const ScheduleRepository = AppDataSource.getRepository(Schedule).extend({
       .getOne();
 
     if (exists) {
+      scheduleObj.updatedAt = new Date();
       this.merge(exists, scheduleObj);
       return this.save(exists);
     }

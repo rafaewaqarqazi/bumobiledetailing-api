@@ -42,6 +42,7 @@ export const AddOnCategoryRepository = AppDataSource?.getRepository(
         throw new BadRequestError('AddOn Category already exists!');
       }
     }
+    addOnCategoryObj.updatedAt = new Date();
     this.merge(exists, addOnCategoryObj);
     return this.save(exists);
   },
