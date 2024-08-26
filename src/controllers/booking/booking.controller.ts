@@ -31,7 +31,7 @@ export default class BookingController {
           make: Joi.string().required(),
           model: Joi.string().required(),
           year: Joi.number().required(),
-          licensePlate: Joi.string().required(),
+          // licensePlate: Joi.string().required(),
         }).required(),
         service: Joi.number().required(),
         package: Joi.number().required(),
