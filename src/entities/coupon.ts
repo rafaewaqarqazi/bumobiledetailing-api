@@ -15,14 +15,11 @@ class Coupon extends BaseEntity {
   @Column({ nullable: false })
   code: string;
 
-  @Column({ nullable: false })
-  description: string;
+  @Column({ nullable: true })
+  discountAmount: string;
 
-  @Column({ nullable: false })
-  discountAmount: number;
-
-  @Column({ nullable: false })
-  discountPercentage: number;
+  @Column({ nullable: true })
+  discountPercentage: string;
 
   @Column({ nullable: false, type: 'datetime' })
   startAt: Date;
@@ -52,9 +49,8 @@ class Coupon extends BaseEntity {
 // Validation Schema
 const couponSchema = Joi.object({
   code: Joi.string().required(),
-  description: Joi.string().required(),
-  discountAmount: Joi.number().required(),
-  discountPercentage: Joi.number().required(),
+  discountAmount: Joi.number().allow(null, ''),
+  discountPercentage: Joi.number().allow(null, ''),
   startAt: Joi.date().required(),
   endAt: Joi.date().required(),
 });
