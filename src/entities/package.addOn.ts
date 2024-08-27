@@ -15,6 +15,9 @@ class PackageAddOn extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
+  @Column({ nullable: true })
+  rank: number;
+
   @ManyToOne(() => Package, (_package) => _package.packageAddOns, {
     onDelete: 'CASCADE',
   })

@@ -78,12 +78,6 @@ export const PackageRepository = AppDataSource?.getRepository(Package).extend({
     }
     if (packageAddons.length) {
       for (const packageAddOn of packageAddons) {
-        const existsPackageAddOn = existsPackageAddOns.some(
-          (p) => p.addOn.id === (packageAddOn.addOn?.id || packageAddOn.addOn),
-        );
-        if (existsPackageAddOn) {
-          continue;
-        }
         packageAddOn.package = exists;
         await PackageAddOnsRepository.createOrUpdatePackageAddOn(packageAddOn);
       }
