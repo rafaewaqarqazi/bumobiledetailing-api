@@ -18,7 +18,6 @@ import { Referral } from './referral';
 import { Campaign } from './campaign';
 import { Coupon } from './coupon';
 import { Offer } from './offer';
-import { QuoteService } from './quote.service';
 import { Admin } from './admin';
 import { Preferences } from './customerPreferences';
 import { CustomerService } from './customer.service';
@@ -47,7 +46,6 @@ export const entities = [
   Campaign,
   Coupon,
   Offer,
-  QuoteService,
   Preferences,
   CustomerService,
   ServicePackage,

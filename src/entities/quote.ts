@@ -6,10 +6,12 @@ import {
   BeforeInsert,
   BaseEntity,
   ManyToOne,
+  OneToOne,
 } from 'typeorm';
 import Joi from 'joi';
 import { Customer } from './customer';
-import { Vehicle } from './vehicle';
+import { CustomerService } from './customer.service';
+import { statusEnums } from '../enums/statusEnums';
 @Entity()
 class Quote extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -21,7 +23,7 @@ class Quote extends BaseEntity {
   @Column({ nullable: false })
   quotedAmount: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: statusEnums.ACTIVE })
   statusId: number;
 
   @ManyToOne(() => Customer, (customer) => customer.quotes, {
@@ -29,10 +31,8 @@ class Quote extends BaseEntity {
   })
   customer: Customer;
 
-  @ManyToOne(() => Vehicle, (vehicle) => vehicle.quotes, {
-    onDelete: 'CASCADE',
-  })
-  vehicle: Vehicle;
+  @OneToOne(() => CustomerService, (customerService) => customerService.quote)
+  customerService: CustomerService;
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
@@ -58,5 +58,6 @@ const quoteSchema = Joi.object({
   quoteDate: Joi.date().required(),
   quotedAmount: Joi.string().required(),
   statusId: Joi.number().required(),
+  customer: Joi.number().required(),
 });
 export { Quote, quoteSchema };

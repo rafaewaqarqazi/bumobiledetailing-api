@@ -7,10 +7,6 @@ export const ScheduleRepository = AppDataSource.getRepository(Schedule).extend({
     scheduleObj: Partial<Schedule>,
   ): Promise<Schedule> {
     const exists = await this.createQueryBuilder('schedule')
-      .where('schedule.date = :date', { date: scheduleObj.date })
-      .andWhere('schedule.timeslot = :timeslot', {
-        timeslot: scheduleObj.timeslot?.id || scheduleObj.timeslot,
-      })
       .andWhere('schedule.customer = :customer', {
         customer: scheduleObj.customer?.id || scheduleObj.customer,
       })

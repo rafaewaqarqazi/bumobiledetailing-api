@@ -18,6 +18,7 @@ import { ServiceAssignment } from './service.assignment';
 import { Payment } from './payment';
 import { Package } from './package';
 import { CustomerAddOn } from './customer.addOn';
+import { Quote } from './quote';
 @Entity()
 class CustomerService extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -55,6 +56,10 @@ class CustomerService extends BaseEntity {
   @OneToOne(() => Schedule, (schedule) => schedule.customerService)
   @JoinColumn()
   schedule: Schedule;
+
+  @OneToOne(() => Quote, (quote) => quote.customerService)
+  @JoinColumn()
+  quote: Quote;
 
   @OneToMany(() => Payment, (payment) => payment.customerService, {
     onDelete: 'CASCADE',

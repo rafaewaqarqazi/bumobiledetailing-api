@@ -13,12 +13,6 @@ export const CustomerServiceRepository = AppDataSource.getRepository(
         customer:
           customerServiceObj.customer?.id || customerServiceObj.customer,
       })
-      .andWhere('customerService.service = :service', {
-        service: customerServiceObj.service?.id || customerServiceObj.service,
-      })
-      .andWhere('customerService.package = :package', {
-        package: customerServiceObj.package?.id || customerServiceObj.package,
-      })
       .getOne();
 
     if (exists) {
@@ -66,7 +60,8 @@ export const CustomerServiceRepository = AppDataSource.getRepository(
       .leftJoinAndSelect('schedule.timeslot', 'timeslot')
       .leftJoinAndSelect('customerService.customerAddOns', 'customerAddOns')
       .leftJoinAndSelect('customerAddOns.addOn', 'addOn')
-      .leftJoinAndSelect('customerService.vehicle', 'vehicle');
+      .leftJoinAndSelect('customerService.vehicle', 'vehicle')
+      .leftJoinAndSelect('customerService.quote', 'quote');
     if (queryString) {
       query.where('customerService.id = :id', { id: queryString });
     }

@@ -30,19 +30,29 @@ export const CustomerAddOnRepository = AppDataSource.getRepository(
     return this.save(customerAddOnObj);
   },
   async createCustomerAddOn(
-    scheduleObj: Partial<CustomerAddOn>,
+    customerAddOnObj: Partial<CustomerAddOn>,
   ): Promise<CustomerAddOn> {
-    return this.save(scheduleObj);
+    return this.save(customerAddOnObj);
   },
-  async deleteCustomerAddOn(scheduleId: number): Promise<void> {
-    const schedule = await this.findOne({
+  async deleteCustomerAddOn(customerAddOnId: number): Promise<void> {
+    const customerAddOn = await this.findOne({
       where: {
-        id: scheduleId,
+        id: customerAddOnId,
       },
     });
-    if (!schedule) {
+    if (!customerAddOn) {
       throw new BadRequestError('Customer AddOn not found!');
     }
-    await this.remove(schedule);
+    await this.remove(customerAddOn);
+  },
+  async deleteCustomerAddOnsByCustomerServiceId(
+    customerServiceId: number,
+  ): Promise<void> {
+    await this.createQueryBuilder('customerAddOn')
+      .delete()
+      .where('customerService = :customerService', {
+        customerService: customerServiceId,
+      })
+      .execute();
   },
 });

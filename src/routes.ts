@@ -11,6 +11,7 @@ import AddOnRouter from './routes/addOn.routes';
 import TimeslotRouter from './routes/timeslot.routes';
 import BookingRouter from './routes/booking.routes';
 import VehicleRouter from './routes/vehicle.routes';
+import CustomerServiceRouter from './routes/customer.service.routes';
 
 const router: any = new SwaggerRouter({ prefix: '/api' });
 
@@ -26,6 +27,7 @@ AddOnCategoryRouter.definingAddOnCategoryRoutes(router);
 TimeslotRouter.definingTimeslotRoutes(router);
 BookingRouter.definingBookingRoutes(router);
 VehicleRouter.definingVehicleRoutes(router);
+CustomerServiceRouter.definingCustomerServiceRoutes(router);
 // Swagger endpoint
 router.swagger({
   title: 'BU Mobile Detailing API',

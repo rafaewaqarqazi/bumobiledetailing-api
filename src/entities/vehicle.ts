@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 import Joi from 'joi';
 import { Customer } from './customer';
-import { Quote } from './quote';
 import { CustomerService } from './customer.service';
 @Entity()
 class Vehicle extends BaseEntity {
@@ -48,9 +47,6 @@ class Vehicle extends BaseEntity {
     (customerService) => customerService.vehicle,
   )
   customerServices: CustomerService[];
-
-  @OneToMany(() => Quote, (quote) => quote.vehicle)
-  quotes: Quote[];
 
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })

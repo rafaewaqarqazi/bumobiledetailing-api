@@ -15,6 +15,7 @@ import { titleCase } from '../../utils/helpers';
 import { config } from '../../config';
 import { CustomerRepository } from '../../repositories/customer.repository';
 import { VehicleRepository } from '../../repositories/vehicle.repository';
+import { QuoteRepository } from '../../repositories/quote.repository';
 @tagsAll(['Booking'])
 export default class BookingController {
   @request('post', '/booking')
@@ -53,6 +54,13 @@ export default class BookingController {
         timeslot: body.timeslot.timeslot,
         customer: customer,
       });
+      const quote = await QuoteRepository.createOrUpdate({
+        quoteDate: new Date(),
+        quotedAmount: body.totalPrice,
+        statusId: statusEnums.ACTIVE,
+        customer: customer,
+      });
+
       const customerService = await CustomerServiceRepository.createOrUpdate({
         service: body.service,
         package: body.package,
@@ -60,8 +68,14 @@ export default class BookingController {
         statusId: statusEnums.ACTIVE,
         schedule: schedule,
         vehicle: vehicle,
+        quote: quote,
       });
       const customerAddOns = body.customerAddOns;
+      if (!!customerAddOns) {
+        await CustomerAddOnRepository.deleteCustomerAddOnsByCustomerServiceId(
+          customerService.id,
+        );
+      }
       for (const key in customerAddOns) {
         const quantity = customerAddOns[key];
         await CustomerAddOnRepository.createOrUpdate({
