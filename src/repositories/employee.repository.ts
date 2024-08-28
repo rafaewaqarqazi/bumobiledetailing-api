@@ -86,37 +86,30 @@ export const EmployeeRepository = AppDataSource?.getRepository(Employee).extend(
     async updateEmployee(
       employeeObj: Employee & {
         newPassword?: string;
-        currentPassword?: string;
-        newEmail?: string;
       },
     ): Promise<Employee> {
       if (!Employee.hasId(employeeObj))
         throw new BadRequestError('Employee id not provided');
-      if (employeeObj.newEmail) {
-        const exists: Employee = await this.findOne({
-          where: { email: employeeObj.newEmail },
-        });
-        if (exists) {
-          throw new NotFoundError('Email already exist');
-        }
-        employeeObj.email = employeeObj.newEmail;
-        delete employeeObj.newEmail;
-      }
 
-      const employee: Employee = await this.findOne(employeeObj.id);
+      const employee: Employee = await this.findOne({
+        where: {
+          id: employeeObj.id,
+        },
+      });
       if (!employee) {
         throw new NotFoundError('Employee not found');
       }
-      if (employeeObj.currentPassword) {
-        const std = await this.findOne({
-          where: { id: employeeObj.id },
-          select: ['password'],
+      if (employeeObj.email !== employee.email) {
+        const exists: Employee = await this.findOne({
+          where: {
+            email: employeeObj.email,
+          },
         });
-        if (!bcrypt.compareSync(employeeObj.currentPassword, std.password)) {
-          throw new NotFoundError('Incorrect current password');
+        if (exists) {
+          throw new BadRequestError('Employee email already exists');
         }
-        delete employeeObj.currentPassword;
       }
+
       if (employeeObj.newPassword) {
         employeeObj.password = bcrypt.hashSync(
           employeeObj.newPassword,
