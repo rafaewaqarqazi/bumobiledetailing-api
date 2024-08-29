@@ -6,11 +6,29 @@ export default class BookingRouter {
   public static definingBookingRoutes(router: any) {
     router.post('/booking', BookingController.createBooking);
     router.get('/bookings', jwtAuth, adminAuth, BookingController.getBookings);
-    // router.delete(
-    //   '/booking/:id',
-    //   jwtAuth,
-    //   adminAuth,
-    //   BookingController.deletePackageAddOn,
-    // );
+    router.get(
+      '/booking/:id',
+      jwtAuth,
+      adminAuth,
+      BookingController.getBookingById,
+    );
+    router.put(
+      '/booking/:id/status',
+      jwtAuth,
+      adminAuth,
+      BookingController.updateBookingStatus,
+    );
+    router.put(
+      '/booking/:id/employee',
+      jwtAuth,
+      adminAuth,
+      BookingController.updateBookingEmployee,
+    );
+    router.delete(
+      '/booking/:id',
+      jwtAuth,
+      adminAuth,
+      BookingController.deleteBooking,
+    );
   }
 }

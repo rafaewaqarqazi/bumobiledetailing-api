@@ -1,5 +1,12 @@
 import { Context } from 'koa';
-import { body, query, request, summary, tagsAll } from 'koa-swagger-decorator';
+import {
+  body,
+  path,
+  query,
+  request,
+  summary,
+  tagsAll,
+} from 'koa-swagger-decorator';
 import winston from 'winston';
 import Response from '../../responses/response.handler';
 import { responseCodeEnums } from '../../enums/responseCodeEnums';
@@ -16,6 +23,7 @@ import { config } from '../../config';
 import { CustomerRepository } from '../../repositories/customer.repository';
 import { VehicleRepository } from '../../repositories/vehicle.repository';
 import { QuoteRepository } from '../../repositories/quote.repository';
+import { ServiceAssignmentRepository } from '../../repositories/service.assignment.repository';
 @tagsAll(['Booking'])
 export default class BookingController {
   @request('post', '/booking')
@@ -159,6 +167,130 @@ export default class BookingController {
         responseCodeEnums.SUCCESS,
         'Bookings fetched successfully',
         { res: bookings, count, current, pageSize },
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
+      );
+    }
+  }
+
+  @request('get', '/booking/{id}')
+  @summary('Get Booking By Id')
+  @path({
+    id: { type: 'number', required: true },
+  })
+  public static async getBookingById(ctx: Context) {
+    try {
+      const id = +ctx.params['id'];
+      const booking = await CustomerServiceRepository.one(id);
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Booking fetched successfully',
+        booking,
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
+      );
+    }
+  }
+  @request('put', '/booking/{id}/status')
+  @summary('Update Booking Status')
+  @path({
+    id: { type: 'number', required: true },
+  })
+  @body({
+    statusId: { type: 'number', required: true },
+  })
+  public static async updateBookingStatus(ctx: Context) {
+    try {
+      const id = +ctx.params['id'];
+      const body = ctx.request.body;
+      await Joi.object({
+        statusId: Joi.number().required(),
+      }).validateAsync(body);
+
+      await CustomerServiceRepository.save({
+        id,
+        statusId: body.statusId,
+      });
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Booking status updated successfully',
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
+      );
+    }
+  }
+  @request('put', '/booking/{id}/employee')
+  @summary('Update Booking Employee')
+  @path({
+    id: { type: 'number', required: true },
+  })
+  @body({
+    employee: { type: 'number', required: true },
+  })
+  public static async updateBookingEmployee(ctx: Context) {
+    try {
+      const id = +ctx.params['id'];
+      const body = ctx.request.body;
+      await Joi.object({
+        employee: Joi.number().required(),
+      }).validateAsync(body);
+      const booking = await CustomerServiceRepository.findOne({
+        where: {
+          id,
+        },
+      });
+      await ServiceAssignmentRepository.createOrUpdate({
+        customerService: booking,
+        employee: body.employee,
+      });
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Booking employee updated successfully',
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
+      );
+    }
+  }
+  @request('delete', '/booking/{id}')
+  @summary('Delete Booking')
+  @path({
+    id: { type: 'number', required: true },
+  })
+  public static async deleteBooking(ctx: Context) {
+    try {
+      const id = +ctx.params['id'];
+      await CustomerServiceRepository.deleteCustomerService(id);
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Booking deleted successfully',
       );
     } catch (err) {
       winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);

@@ -40,6 +40,10 @@ export const CustomerServiceRepository = AppDataSource.getRepository(
         'customerAddOns',
         'customerAddOns.addOn',
         'vehicle',
+        'customer',
+        'quote',
+        'serviceAssignments',
+        'serviceAssignments.employee',
       ],
     });
   },
@@ -61,7 +65,12 @@ export const CustomerServiceRepository = AppDataSource.getRepository(
       .leftJoinAndSelect('customerService.customerAddOns', 'customerAddOns')
       .leftJoinAndSelect('customerAddOns.addOn', 'addOn')
       .leftJoinAndSelect('customerService.vehicle', 'vehicle')
-      .leftJoinAndSelect('customerService.quote', 'quote');
+      .leftJoinAndSelect('customerService.quote', 'quote')
+      .leftJoinAndSelect(
+        'customerService.serviceAssignments',
+        'serviceAssignments',
+      )
+      .leftJoinAndSelect('serviceAssignments.employee', 'employee');
     if (queryString) {
       query.where('customerService.id = :id', { id: queryString });
     }
