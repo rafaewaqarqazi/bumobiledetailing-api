@@ -44,7 +44,11 @@
   pointer-events: none;
   padding-bottom: 24px;
 }
-
+@media screen and (max-width: 768px) {
+  .pricing-popup-dialog {
+    top: 20px;
+  }
+}
 .pricing-popup-heading{
   margin-top: 0;
   font-size: 18px;

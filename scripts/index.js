@@ -3,7 +3,7 @@ const closeIcon = `<svg width="15" height="15" viewBox="0 0 1792 1792" xmlns="ht
 const pricingPopup = document.querySelector('#pricing-popup');
 const openBtn = document.querySelector('#pricing-open');
 const pricingBtn = document.querySelector('#pricing-close');
-const pricingMask = document.querySelector('#pricing-mask');
+const pricingWrap = document.querySelector('#pricing-wrap');
 const closePopup = (el) => () => {
   el.style.setProperty('display', 'none');
   document.querySelector('#pricing-frame').remove();
@@ -12,7 +12,7 @@ const closePopup = (el) => () => {
 if (pricingBtn) {
   pricingBtn.innerHTML = closeIcon;
   pricingBtn.addEventListener('click', closePopup(pricingPopup));
-  pricingMask.addEventListener('click', closePopup(pricingPopup));
+  pricingWrap.addEventListener('click', closePopup(pricingPopup));
   openBtn.addEventListener('click', () => {
     const f = document.createElement('iframe');
     f.setAttribute('id', 'pricing-frame');
@@ -31,14 +31,7 @@ if (pricingBtn) {
   window.addEventListener(
     'message',
     function (event) {
-      console.log({ event });
       const iframe = document.getElementById('pricing-frame');
-      const w = document.body.clientWidth;
-
-      if (w < 768) {
-        iframe.style.height = 'calc(100vh - 100px)';
-        return;
-      }
       iframe.style.height = event.data + 'px';
     },
     false,
