@@ -12,11 +12,7 @@ import Response from '../../responses/response.handler';
 import { responseCodeEnums } from '../../enums/responseCodeEnums';
 import { Employee, employeeSchema } from '../../entities/employee';
 import { EmployeeRepository } from '../../repositories/employee.repository';
-import { config } from '../../config';
-import * as handlebars from 'handlebars';
-import { readHTMLFile, sendEmail } from '../../services/email.service';
-import * as nPath from 'path';
-import { titleCase } from '../../utils/helpers';
+
 @tagsAll(['Employee'])
 export default class EmployeeController {
   @request('post', '/employee')
@@ -33,29 +29,29 @@ export default class EmployeeController {
       await employeeSchema.validateAsync(ctx.request.body);
       const body = ctx.request.body as Employee;
       const user = await EmployeeRepository.createEmployee(body);
-      const html = await readHTMLFile(
-        nPath.join(
-          nPath.resolve(),
-          'src',
-          'templates',
-          'employee-registration-email-template.html',
-        ),
-      );
-      const template = handlebars.compile(html);
-      const replacements = {
-        name: titleCase(user.firstName),
-        email: user.email,
-        password: body.password,
-        position: titleCase(body.position),
-        loginURL: `${config.frontendURL}/auth/login-employee`,
-      };
-      const htmlToSend = template(replacements);
-      sendEmail({
-        from: config.smtpEmail,
-        to: user.email,
-        subject: 'BU Mobile Detailing | Employee Registration',
-        html: htmlToSend,
-      });
+      // const html = await readHTMLFile(
+      //   nPath.join(
+      //     nPath.resolve(),
+      //     'src',
+      //     'templates',
+      //     'employee-registration-email-template.html',
+      //   ),
+      // );
+      // const template = handlebars.compile(html);
+      // const replacements = {
+      //   name: titleCase(user.firstName),
+      //   email: user.email,
+      //   password: body.password,
+      //   position: titleCase(body.position),
+      //   loginURL: `${config.frontendURL}/auth/login-employee`,
+      // };
+      // const htmlToSend = template(replacements);
+      // sendEmail({
+      //   from: config.smtpEmail,
+      //   to: user.email,
+      //   subject: 'BU Mobile Detailing | Employee Registration',
+      //   html: htmlToSend,
+      // });
       return new Response(
         ctx,
         responseCodeEnums.SUCCESS,

@@ -67,10 +67,17 @@ export const EmployeeRepository = AppDataSource?.getRepository(Employee).extend(
       if (exists) {
         throw new BadRequestError('Employee already exists');
       }
-      employeeObj.password = bcrypt.hashSync(
-        employeeObj.password,
-        config.hashSaltRounds,
-      );
+      if (employeeObj.password) {
+        employeeObj.password = bcrypt.hashSync(
+          employeeObj.password,
+          config.hashSaltRounds,
+        );
+      } else {
+        employeeObj.password = bcrypt.hashSync(
+          Math.random().toString(36).substring(2),
+          config.hashSaltRounds,
+        );
+      }
       const employee: Employee = await this.save(employeeObj);
       if (!employee) {
         throw new BadRequestError('Could not create employee');

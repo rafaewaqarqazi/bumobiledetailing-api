@@ -74,7 +74,7 @@ const employeeSchema = Joi.object({
   lastName: Joi.string().required(),
   email: Joi.string().email().required(),
   phone: Joi.string().required(),
-  password: Joi.string().required(),
+  password: Joi.string().allow(null, ''),
   position: Joi.string().required(),
 });
 export { Employee, employeeSchema };
