@@ -185,7 +185,9 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
       if (current && pageSize) {
         query.skip((current - 1) * pageSize).take(pageSize);
       }
-      return await query.getManyAndCount();
+      return await query
+        .orderBy('customer.updatedAt', 'DESC')
+        .getManyAndCount();
     },
     async deleteCustomer(id: number): Promise<number> {
       const customer = await this.findOne({

@@ -5,45 +5,87 @@ const pricingPopup = document.querySelector('#pricing-popup');
 const openBtn = document.querySelector('#pricing-open');
 const pricingBtn = document.querySelector('#pricing-close');
 const pricingWrap = document.querySelector('#pricing-wrap');
-const closePopup =
-  (el, i = false) =>
-  () => {
-    el.style.setProperty('display', 'none');
-    if (!i) {
-      document.querySelector('#pricing-frame').remove();
-    }
-    document.body.style.removeProperty('overflow');
-  };
+const bookingPopup = document.querySelector('#booking-popup');
+const bookingOpenBtn = document.querySelectorAll('.booking-open');
+const bookingCloseBtn = document.querySelector('#booking-close');
+const bookingWrap = document.querySelector('#booking-wrap');
+const closePopup = (el, f) => () => {
+  el.style.setProperty('display', 'none');
+  if (!!f) {
+    document.querySelector(f).remove();
+  }
+  document.body.style.removeProperty('overflow');
+};
 const bodyOverflowHidden = () => {
   document.body.style.setProperty('overflow', 'hidden');
 };
-if (pricingBtn) {
-  pricingBtn.innerHTML = closeIcon;
-  pricingBtn.addEventListener('click', closePopup(pricingPopup));
-  pricingWrap.addEventListener('click', closePopup(pricingPopup));
-  openBtn.addEventListener('click', () => {
-    const f = document.createElement('iframe');
-    f.setAttribute('id', 'pricing-frame');
-    f.setAttribute('src', 'https://app.bumobiledetailing.com/pricing');
-    f.setAttribute('frameborder', '0');
-    f.setAttribute('style', 'width: 100%; min-height: 324px;');
-    document.querySelector('#pricing-frame-container').appendChild(f);
-    pricingPopup.style.setProperty('display', 'block');
-    const pricingDialog = document.querySelector('#pricing-dialog');
-    setTimeout(() => {
-      bodyOverflowHidden();
-      pricingDialog.style.setProperty('visibility', 'visible');
-    }, 300);
-  });
+const handleOpen = ({ frame, popup, url }) => {
+  const f = document.createElement('iframe');
+  f.setAttribute('id', `${frame}-frame`);
+  f.setAttribute('src', `https://app.bumobiledetailing.com/${url}`);
+  f.setAttribute('frameborder', '0');
+  f.setAttribute('style', 'width: 100%; min-height: 324px;');
+  document.querySelector(`#${frame}-frame-container`).appendChild(f);
+  popup.style.setProperty('display', 'block');
+  const d = document.querySelector(`#${frame}-dialog`);
+  setTimeout(() => {
+    bodyOverflowHidden();
+    d.style.setProperty('visibility', 'visible');
+  }, 300);
+};
+const handlePopup = ({
+  openBtn,
+  openBtns,
+  closeBtn,
+  popup,
+  wrap,
+  frame,
+  url,
+}) => {
+  closeBtn.innerHTML = closeIcon;
+  closeBtn.addEventListener('click', closePopup(popup, `#${frame}-frame`));
+  wrap.addEventListener('click', closePopup(popup, `#${frame}-frame`));
+  if (openBtns?.length) {
+    openBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        handleOpen({ frame, popup, url });
+      });
+    });
+  }
+  if (openBtn) {
+    openBtn.addEventListener('click', () => {
+      handleOpen({ frame, popup, url });
+    });
+  }
 
   window.addEventListener(
     'message',
     function (event) {
-      const iframe = document.getElementById('pricing-frame');
-      iframe.style.height = event.data + 'px';
+      const iframe = document.getElementById(`${frame}-frame`);
+      iframe.style.height = event.data + 5 + 'px';
     },
     false,
   );
+};
+if (pricingBtn) {
+  handlePopup({
+    popup: pricingPopup,
+    openBtn,
+    closeBtn: pricingBtn,
+    wrap: pricingWrap,
+    frame: 'pricing',
+    url: 'pricing',
+  });
+}
+if (bookingCloseBtn) {
+  handlePopup({
+    popup: bookingPopup,
+    openBtns: bookingOpenBtn,
+    closeBtn: bookingCloseBtn,
+    wrap: bookingWrap,
+    frame: 'booking',
+    url: 'get-started-popup',
+  });
 }
 const showError = (msg, el) => {
   el.style.border = '1px solid red';
@@ -153,7 +195,7 @@ Copy Code!
   const dialog = document.querySelector('#intent-popup-dialog');
   const form = document.querySelector('#intent-popup-form');
   const copyBtn = document.querySelector('#intent-popup-coupon button');
-  btn.addEventListener('click', closePopup(intent, true));
+  btn.addEventListener('click', closePopup(intent));
   setTimeout(() => {
     bodyOverflowHidden();
     dialog.style.setProperty('visibility', 'visible');

@@ -50,6 +50,9 @@
 .intent-popup-dialog {
   width: 700px;
 }
+.booking-popup-content{
+  background: transparent;
+}
 .intent-popup-content {
   padding: 24px 0;
   z-index: 1;
