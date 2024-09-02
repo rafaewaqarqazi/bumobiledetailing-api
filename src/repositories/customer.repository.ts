@@ -67,7 +67,20 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
         },
       });
       if (exists) {
-        return exists;
+        const newData = {};
+        Object.keys(customerObj).forEach((key) => {
+          if (!!customerObj[key] && key !== 'id' && key !== 'password') {
+            newData[key] = customerObj[key];
+          }
+          if (!!customerObj[key] && key === 'password') {
+            newData[key] = bcrypt.hashSync(
+              customerObj[key],
+              config.hashSaltRounds,
+            );
+          }
+        });
+        this.merge(exists, newData);
+        return await this.save(exists);
       }
       if (customerObj.password) {
         customerObj.password = bcrypt.hashSync(
