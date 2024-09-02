@@ -12,6 +12,7 @@ import Response from '../../responses/response.handler';
 import { responseCodeEnums } from '../../enums/responseCodeEnums';
 import { Customer, customerSchema } from '../../entities/customer';
 import { CustomerRepository } from '../../repositories/customer.repository';
+import Joi from 'joi';
 @tagsAll(['Customer'])
 export default class CustomerController {
   @request('post', '/customer')
@@ -54,6 +55,34 @@ export default class CustomerController {
       //   subject: 'BU Mobile Detailing | Customer Registration',
       //   html: htmlToSend,
       // });
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Customer created successfully',
+        user,
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
+      );
+    }
+  }
+  @request('post', '/customer/intent')
+  @summary('Save Intent Customer')
+  @body({
+    email: { type: 'string', required: true },
+  })
+  public static async saveIntentCustomer(ctx: Context) {
+    try {
+      await Joi.object({
+        email: Joi.string().email().required(),
+      }).validateAsync(ctx.request.body);
+      const body = ctx.request.body as Customer;
+      const user = await CustomerRepository.createCustomer(body);
       return new Response(
         ctx,
         responseCodeEnums.SUCCESS,

@@ -5,6 +5,7 @@ import { adminAuth } from '../policies/AdminAuth';
 export default class CustomerRouter {
   public static definingCustomerRoutes(router: any) {
     router.post('/customer', CustomerController.createCustomer);
+    router.post('/customer/intent', CustomerController.saveIntentCustomer);
     router.put(
       '/customer',
       jwtAuth,
