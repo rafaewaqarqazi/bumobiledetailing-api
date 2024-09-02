@@ -6,6 +6,7 @@ import {
   BeforeInsert,
   BaseEntity,
   OneToMany,
+  DeleteDateColumn,
 } from 'typeorm';
 import Joi from 'joi';
 import { EmployeePositions } from '../enums/employeePositions';
@@ -56,6 +57,8 @@ class Employee extends BaseEntity {
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
   updatedAt: Date;
 
+  @DeleteDateColumn({ nullable: true, type: 'datetime' })
+  deletedAt: Date;
   // typeORM listeners (HOOKS)
   @BeforeUpdate()
   beforeupdate() {

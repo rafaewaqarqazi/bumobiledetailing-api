@@ -5,6 +5,7 @@ import {
   BeforeUpdate,
   BeforeInsert,
   BaseEntity,
+  DeleteDateColumn,
 } from 'typeorm';
 import Joi from 'joi';
 @Entity()
@@ -37,6 +38,8 @@ class Admin extends BaseEntity {
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
   updatedAt: Date;
 
+  @DeleteDateColumn({ nullable: true, type: 'datetime' })
+  deletedAt: Date;
   // typeORM listeners (HOOKS)
   @BeforeUpdate()
   beforeupdate() {

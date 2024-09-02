@@ -8,6 +8,7 @@ import {
   OneToMany,
   OneToOne,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import Joi from 'joi';
 import { Vehicle } from './vehicle';
@@ -98,6 +99,9 @@ class Customer extends BaseEntity {
 
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ nullable: true, type: 'datetime' })
+  deletedAt: Date;
 
   // typeORM listeners (HOOKS)
   @BeforeUpdate()
