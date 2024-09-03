@@ -158,7 +158,7 @@ const handleIntent = () => {
 ${closeIcon}
 </button>
 <h2 id='intent-popup-heading' class="intent-popup-heading">Wait, we have a special offer for you!</h2>
-<h1 id='intent-popup-text' class="intent-popup-text">Checkout now &amp; receive 15% OFF your first order</h1>
+<h1 id='intent-popup-text' class="intent-popup-text">Checkout now &amp; receive 15% OFF your first booking</h1>
 <form id='intent-popup-form' class="intent-popup-form">
 <div class="intent-popup-sub">Enter your email for your exclusive offer</div>
 <div class="intent-popup-input-wrapper">
@@ -176,7 +176,7 @@ GET MY 15% OFF
 <div id='intent-popup-coupon' class='intent-popup-form' style='display: none'>
 <div class='mt-24' style="display: flex;flex-direction: column">
 <p class="intent-popup-sub" style='max-width: 24rem;margin: 0 auto'>Use the following code & complete
-your order now:</p>
+your booking now:</p>
 <div style='display: flex; justify-content: center' class='mt-24'>
 <span class="intent-popup-input coupon">LABOR</span></div>
 <button type="button" class="intent-popup-submit mt-24">

@@ -15,12 +15,13 @@ import { Vehicle } from './vehicle';
 import { Quote } from './quote';
 import { CreditCard } from './creditCard';
 import { Feedback } from './feedback';
-import { TextMessage } from './textMessage';
 import { Referral } from './referral';
 import { Preferences } from './customerPreferences';
 import { CustomerService } from './customer.service';
 import { CustomerAddOn } from './customer.addOn';
 import { Schedule } from './schedule';
+import { SMSConversation } from './smsConversation';
+import { EmailMessage } from './emailMessage';
 @Entity()
 class Customer extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -80,8 +81,14 @@ class Customer extends BaseEntity {
   @OneToMany(() => Feedback, (feedback) => feedback.customer)
   feedbacks: Feedback[];
 
-  @OneToMany(() => TextMessage, (textMessage) => textMessage.customer)
-  textMessages: TextMessage[];
+  @OneToMany(
+    () => SMSConversation,
+    (smsConversation) => smsConversation.customer,
+  )
+  smsConversations: SMSConversation[];
+
+  @OneToMany(() => EmailMessage, (emailMessage) => emailMessage.customer)
+  emailMessages: EmailMessage[];
 
   @OneToMany(() => Referral, (referral) => referral.customer)
   referrals: Referral[];

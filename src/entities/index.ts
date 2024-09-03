@@ -12,7 +12,7 @@ import { CreditCard } from './creditCard';
 import { Payment } from './payment';
 import { Feedback } from './feedback';
 import { Schedule } from './schedule';
-import { TextMessage } from './textMessage';
+import { SmsMessages } from './smsMessages';
 import { EmailMessage } from './emailMessage';
 import { Referral } from './referral';
 import { Campaign } from './campaign';
@@ -24,6 +24,10 @@ import { CustomerService } from './customer.service';
 import { ServicePackage } from './servicePackage';
 import { CustomerAddOn } from './customer.addOn';
 import { Timeslot } from './timeslot';
+import { Agent } from './agent';
+import { EmailCron } from './emailCron';
+import { SMSConversation } from './smsConversation';
+import { SMSCron } from './smsCron';
 export const entities = [
   Admin,
   Customer,
@@ -40,7 +44,7 @@ export const entities = [
   Payment,
   Feedback,
   Schedule,
-  TextMessage,
+  SmsMessages,
   EmailMessage,
   Referral,
   Campaign,
@@ -51,4 +55,8 @@ export const entities = [
   ServicePackage,
   CustomerAddOn,
   Timeslot,
+  Agent,
+  EmailCron,
+  SMSConversation,
+  SMSCron,
 ];

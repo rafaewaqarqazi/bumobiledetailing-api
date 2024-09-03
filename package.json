@@ -55,9 +55,11 @@
     "mysql": "^2.18.1",
     "mysql-import": "^5.0.26",
     "nodemailer": "^6.9.14",
+    "openai": "^4.57.0",
     "path": "^0.12.7",
     "reflect-metadata": "^0.2.2",
     "sitemapper": "^3.2.9",
+    "socket.io": "^4.7.5",
     "typeorm": "^0.3.20",
     "typescript": "^5.5.4",
     "winston": "^3.14.0"

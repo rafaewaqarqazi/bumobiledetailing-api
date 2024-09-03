@@ -27,6 +27,14 @@ export interface Config {
   spacesSecret: string;
   bucket: string;
   DEV: boolean;
+
+  //   SMS
+  smsUsername: string;
+  smsPassword: string;
+  smsDID: number;
+
+  //   OPENAI
+  openAiKey: string;
 }
 const config: Config = {
   port: +(process.env.PORT || 4005),
@@ -57,6 +65,14 @@ const config: Config = {
   spacesSecret: process.env.SPACES_SECRET,
   bucket: process.env.SPACES_BUCKET,
   DEV: process.env.NODE_ENV === 'development',
+
+  // SMS
+  smsUsername: process.env.SMS_USERNAME,
+  smsPassword: process.env.SMS_PASSWORD,
+  smsDID: +process.env.SMS_DID,
+
+  // OPENAI
+  openAiKey: process.env.OPENAI_KEY,
 };
 
 export { config };

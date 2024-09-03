@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+import { Coupon } from '../entities/coupon';
 
 export const currencyFormatter = Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
@@ -8,13 +10,13 @@ export const dateFormat = 'MM-DD-YYYY';
 export const titleCase = (text = '') =>
   !!text
     ? text
-      .split(/[']/gm)
-      .map(capitalise)
-      .join("'")
-      .split(/\s/gm)
-      .map(capitalise)
-      .join(' ')
-      ?.trim()
+        .split(/[']/gm)
+        .map(capitalise)
+        .join("'")
+        .split(/\s/gm)
+        .map(capitalise)
+        .join(' ')
+        ?.trim()
     : '';
 const capitalise = (item) =>
   item?.includes("'")
@@ -24,8 +26,6 @@ const capitalise = (item) =>
 export const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
-
-
 
 export const statusNames = {
   1: 'Active',
@@ -60,13 +60,33 @@ export const getESTTime = (date?: any) => {
   return new Date(estTimestamp);
 };
 
-
-
 export const getDiscountedPriceByPercentage = (price, discount) =>
   Number((Number(price) - Number((discount / 100) * Number(price))).toFixed(2));
 export const sanitizePhoneNumber = (phone: string) =>
   phone
-    ?.replace(/\s/, '')
+    .replace(/\s/, '')
     .replace('(', '')
     .replace(')', '')
-    .replace(/[-]/g, '');
+    .replace(/[-]/g, '')
+    .replace(/\s/g, '');
+export const sanitizeSMSAgentPrompt = (
+  prompt: string,
+  data: {
+    coupon: Coupon;
+    loginURL?: string;
+    signUpURL?: string;
+  },
+) =>
+  prompt
+    ?.replace(/\[COMPANY_NAME\]/gm, 'BU Mobile Detailing')
+    .replace(
+      /\[DISCOUNT\]/gm,
+      `${data?.coupon?.discountPercentage ? `${data?.coupon?.discountPercentage}%` : currencyFormatter.format(Number(data?.coupon?.discountAmount || 0))}`,
+    )
+    .replace(/\[COUPON_CODE\]/gm, data?.coupon?.code)
+
+    .replace(/\[WEBSITE_URL\]/gm, 'https://www.bumobiledetailing.com')
+    .replace(
+      /\[DISCOUNT_ENDING\]/gm,
+      dayjs().add(1, 'week').format(dateFormat),
+    );

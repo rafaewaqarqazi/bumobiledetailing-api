@@ -12,12 +12,13 @@ import { config } from './src/config';
 import { userAgent } from 'koa-useragent';
 import { AppDataSource } from './src/connection';
 import { router } from './src/routes';
+import { handleSocket } from './src/services/socket.service';
 
 /**
  * Creating Connection With database
  */
 console.log(`Connecting to DB... ${config.port}`);
-
+let io: any;
 AppDataSource.initialize()
   .then(async () => {
     console.log(`Connected to DB ${config.port}`);
@@ -69,8 +70,15 @@ AppDataSource.initialize()
       };
     });
     const server = require('http').createServer(app.callback());
+    io = require('socket.io')(server, {
+      cors: {
+        origin: '*',
+      },
+    });
+    io.on('connection', handleSocket);
     server.listen(config.port);
 
     console.log(`Server running on port ${config.port}`);
   })
   .catch((error: string) => console.log('TypeORM connection error: ', error));
+export { io };

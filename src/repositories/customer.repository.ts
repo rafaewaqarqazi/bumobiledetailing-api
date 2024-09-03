@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import { AppDataSource } from '../connection';
 import { config } from '../config';
 import { PreferencesRepository } from './preferences.repository';
+import { sanitizePhoneNumber } from '../utils/helpers';
 
 export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
   {
@@ -78,6 +79,9 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
               config.hashSaltRounds,
             );
           }
+          if (!!customerObj[key] && key === 'phone') {
+            newData[key] = sanitizePhoneNumber(customerObj[key]);
+          }
         });
         this.merge(exists, newData);
         return await this.save(exists);
@@ -99,6 +103,7 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
           customerObj.preferences,
         );
       }
+      customerObj.phone = sanitizePhoneNumber(customerObj.phone);
       const customer: Customer = await this.save(customerObj);
       if (!customer) {
         throw new BadRequestError('Could not create customer');
@@ -131,7 +136,11 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
         delete customerObj.newEmail;
       }
 
-      const customer: Customer = await this.findOne(customerObj.id);
+      const customer: Customer = await this.findOne({
+        where: {
+          id: customerObj.id,
+        },
+      });
       if (!customer) {
         throw new NotFoundError('Customer not found');
       }
@@ -152,6 +161,7 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
         );
         delete customerObj.newPassword;
       }
+      customerObj.phone = sanitizePhoneNumber(customerObj.phone);
       customerObj.updatedAt = new Date();
       this.merge(customer, customerObj);
       await customer.save();
@@ -169,10 +179,11 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
       queryString: string;
       statusId: number;
     }): Promise<[Customer[], number]> {
-      const query = this.createQueryBuilder('customer').leftJoinAndSelect(
-        'customer.preferences',
-        'preferences',
-      );
+      const query = this.createQueryBuilder('customer')
+        .leftJoinAndSelect('customer.preferences', 'preferences')
+        .leftJoinAndSelect('customer.vehicles', 'vehicles')
+        .leftJoinAndSelect('customer.customerServices', 'customerServices')
+        .leftJoinAndSelect('customer.smsConversations', 'smsConversations');
       if (statusId) {
         query.andWhere('customer.statusId = :statusId', { statusId });
       }

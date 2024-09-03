@@ -9,10 +9,14 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { statusEnums } from '../enums/statusEnums';
 import { CampaignType } from '../enums/campaignType';
 import { Offer } from './offer';
+import { Agent } from './agent';
+import { SMSCron } from './smsCron';
+import { EmailCron } from './emailCron';
 interface ICampaignQueryFilters {}
 export enum CampaignQueryEnums {}
 @Entity()
@@ -70,6 +74,15 @@ class Campaign extends BaseEntity {
     onDelete: 'CASCADE',
   })
   followUpCampaign: Campaign;
+
+  @ManyToOne(() => Agent, (agent) => agent.id)
+  agent: Agent;
+
+  @OneToMany(() => SMSCron, (smsCron) => smsCron.campaign)
+  smsCron: SMSCron[];
+
+  @OneToMany(() => EmailCron, (emailCron) => emailCron.campaign)
+  emailCron: EmailCron[];
 
   @OneToOne(() => Offer)
   @JoinColumn()

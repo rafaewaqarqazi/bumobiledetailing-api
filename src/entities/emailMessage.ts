@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import Joi from 'joi';
 import { Customer } from './customer';
+import { EmailCron } from './emailCron';
 @Entity()
 class EmailMessage extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -22,11 +23,13 @@ class EmailMessage extends BaseEntity {
   @Column({ nullable: false })
   statusId: number;
 
-  @ManyToOne(() => Customer, (customer) => customer.textMessages, {
+  @ManyToOne(() => Customer, (customer) => customer.emailMessages, {
     onDelete: 'CASCADE',
   })
   customer: Customer;
 
+  @ManyToOne(() => EmailCron, (emailCron) => emailCron.id)
+  emailCron: EmailCron;
   // Generic Fields
   @Column({ nullable: true, type: 'datetime', default: () => 'NOW()' })
   createdAt: Date;
@@ -45,5 +48,6 @@ const emailMessageSchema = Joi.object({
   subject: Joi.string().required(),
   statusId: Joi.number().required(),
   customer: Joi.number().required(),
+  emailCron: Joi.number(),
 });
 export { EmailMessage, emailMessageSchema };
