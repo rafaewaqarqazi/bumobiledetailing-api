@@ -62,30 +62,33 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
      */
     async createCustomer(customerObj: Partial<Customer>): Promise<Customer> {
       customerObj.statusId = statusEnums.ACTIVE;
-      const exists: Customer = await this.findOne({
-        where: {
-          email: customerObj.email,
-        },
-      });
-      if (exists) {
-        const newData = {};
-        Object.keys(customerObj).forEach((key) => {
-          if (!!customerObj[key] && key !== 'id' && key !== 'password') {
-            newData[key] = customerObj[key];
-          }
-          if (!!customerObj[key] && key === 'password') {
-            newData[key] = bcrypt.hashSync(
-              customerObj[key],
-              config.hashSaltRounds,
-            );
-          }
-          if (!!customerObj[key] && key === 'phone') {
-            newData[key] = sanitizePhoneNumber(customerObj[key]);
-          }
+      if (customerObj.email) {
+        const exists: Customer = await this.findOne({
+          where: {
+            email: customerObj.email,
+          },
         });
-        this.merge(exists, newData);
-        return await this.save(exists);
+        if (exists) {
+          const newData = {};
+          Object.keys(customerObj).forEach((key) => {
+            if (!!customerObj[key] && key !== 'id' && key !== 'password') {
+              newData[key] = customerObj[key];
+            }
+            if (!!customerObj[key] && key === 'password') {
+              newData[key] = bcrypt.hashSync(
+                customerObj[key],
+                config.hashSaltRounds,
+              );
+            }
+            if (!!customerObj[key] && key === 'phone') {
+              newData[key] = sanitizePhoneNumber(customerObj[key]);
+            }
+          });
+          this.merge(exists, newData);
+          return await this.save(exists);
+        }
       }
+
       if (customerObj.password) {
         customerObj.password = bcrypt.hashSync(
           customerObj.password,

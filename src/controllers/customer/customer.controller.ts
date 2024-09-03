@@ -123,7 +123,7 @@ export default class CustomerController {
         serviceDate: Joi.string().required(),
       }).validateAsync(ctx.request.body);
       const body = ctx.request.body;
-      const user = await CustomerRepository.save({
+      const user = await CustomerRepository.createCustomer({
         firstName: body.firstName,
         lastName: body.lastName,
         phone: body.phone,
