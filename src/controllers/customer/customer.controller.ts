@@ -16,6 +16,7 @@ import Joi from 'joi';
 import { VehicleRepository } from '../../repositories/vehicle.repository';
 import { CustomerServiceRepository } from '../../repositories/customer.service.repository';
 import dayjs from 'dayjs';
+import { statusEnums } from '../../enums/statusEnums';
 @tagsAll(['Customer'])
 export default class CustomerController {
   @request('post', '/customer')
@@ -122,7 +123,7 @@ export default class CustomerController {
         serviceDate: Joi.string().required(),
       }).validateAsync(ctx.request.body);
       const body = ctx.request.body;
-      const user = await CustomerRepository.createCustomer({
+      const user = await CustomerRepository.save({
         firstName: body.firstName,
         lastName: body.lastName,
         phone: body.phone,
@@ -140,6 +141,7 @@ export default class CustomerController {
         createdAt: dayjs(body.serviceDate, 'MM/DD/YY').toDate(),
         updatedAt: dayjs(body.serviceDate, 'MM/DD/YY').toDate(),
         customer: user,
+        statusId: statusEnums.ACTIVE,
       });
       return new Response(
         ctx,
