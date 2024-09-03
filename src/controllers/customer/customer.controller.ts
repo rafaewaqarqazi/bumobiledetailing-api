@@ -133,6 +133,7 @@ export default class CustomerController {
         make,
         model,
         customer: user,
+        type: body.type,
       });
       await CustomerServiceRepository.createOrUpdate({
         vehicle,
