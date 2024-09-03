@@ -118,6 +118,7 @@ export default class CustomerController {
         lastName: Joi.string().allow(null, ''),
         phone: Joi.string().allow(null, ''),
         vehicle: Joi.string().required(),
+        type: Joi.string().required(),
         serviceDate: Joi.string().required(),
       }).validateAsync(ctx.request.body);
       const body = ctx.request.body;
