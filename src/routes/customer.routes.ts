@@ -6,6 +6,7 @@ export default class CustomerRouter {
   public static definingCustomerRoutes(router: any) {
     router.post('/customer', CustomerController.createCustomer);
     router.post('/customer/intent', CustomerController.saveIntentCustomer);
+    router.post('/customer/old', CustomerController.saveOldCustomer);
     router.put(
       '/customer',
       jwtAuth,

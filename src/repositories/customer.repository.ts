@@ -60,7 +60,7 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
      * @param {object} customerObj - The customerObj of Customer
      *
      */
-    async createCustomer(customerObj: Customer): Promise<Customer> {
+    async createCustomer(customerObj: Partial<Customer>): Promise<Customer> {
       customerObj.statusId = statusEnums.ACTIVE;
       const exists: Customer = await this.findOne({
         where: {

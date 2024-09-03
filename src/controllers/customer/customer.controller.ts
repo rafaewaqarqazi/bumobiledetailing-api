@@ -13,6 +13,9 @@ import { responseCodeEnums } from '../../enums/responseCodeEnums';
 import { Customer, customerSchema } from '../../entities/customer';
 import { CustomerRepository } from '../../repositories/customer.repository';
 import Joi from 'joi';
+import { VehicleRepository } from '../../repositories/vehicle.repository';
+import { CustomerServiceRepository } from '../../repositories/customer.service.repository';
+import dayjs from 'dayjs';
 @tagsAll(['Customer'])
 export default class CustomerController {
   @request('post', '/customer')
@@ -83,6 +86,59 @@ export default class CustomerController {
       }).validateAsync(ctx.request.body);
       const body = ctx.request.body as Customer;
       const user = await CustomerRepository.createCustomer(body);
+      return new Response(
+        ctx,
+        responseCodeEnums.SUCCESS,
+        'Customer created successfully',
+        user,
+      );
+    } catch (err) {
+      winston.log('error', `400 - ${ctx?.request?.url} - ${err}`);
+      return new Response(
+        ctx,
+        responseCodeEnums.BAD_REQUEST,
+        err.message || 'Something went wrong',
+        err,
+      );
+    }
+  }
+  @request('post', '/customer/old')
+  @summary('Save Old Customer')
+  @body({
+    firstName: { type: 'string', required: true },
+    lastName: { type: 'string', required: true },
+    phone: { type: 'string', required: true },
+    vehicle: { type: 'string', required: true },
+    serviceDate: { type: 'string', required: true },
+  })
+  public static async saveOldCustomer(ctx: Context) {
+    try {
+      await Joi.object({
+        firstName: Joi.string().email().required(),
+        lastName: Joi.string().allow(null, ''),
+        phone: Joi.string().allow(null, ''),
+        vehicle: Joi.string().required(),
+        serviceDate: Joi.string().required(),
+      }).validateAsync(ctx.request.body);
+      const body = ctx.request.body;
+      const user = await CustomerRepository.createCustomer({
+        firstName: body.firstName,
+        lastName: body.lastName,
+        phone: body.phone,
+      });
+      const make = body.vehicle?.split(' ')[0];
+      const model = body.vehicle?.split(' ')[1];
+      const vehicle = await VehicleRepository.createOrUpdateVehicle({
+        make,
+        model,
+        customer: user,
+      });
+      await CustomerServiceRepository.createOrUpdate({
+        vehicle,
+        createdAt: dayjs(body.serviceDate, 'MM/DD/YY').toDate(),
+        updatedAt: dayjs(body.serviceDate, 'MM/DD/YY').toDate(),
+        customer: user,
+      });
       return new Response(
         ctx,
         responseCodeEnums.SUCCESS,
