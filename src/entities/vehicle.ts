@@ -16,13 +16,13 @@ class Vehicle extends BaseEntity {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   make: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   model: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   year: number;
 
   @Column({ nullable: true })
