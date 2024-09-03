@@ -33,7 +33,7 @@ class Customer extends BaseEntity {
   @Column({ nullable: true })
   lastName: string;
 
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: true, unique: true })
   email: string;
 
   @Column({ nullable: true })
