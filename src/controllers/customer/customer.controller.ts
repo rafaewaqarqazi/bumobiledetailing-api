@@ -114,7 +114,7 @@ export default class CustomerController {
   public static async saveOldCustomer(ctx: Context) {
     try {
       await Joi.object({
-        firstName: Joi.string().email().required(),
+        firstName: Joi.string().required(),
         lastName: Joi.string().allow(null, ''),
         phone: Joi.string().allow(null, ''),
         vehicle: Joi.string().required(),
