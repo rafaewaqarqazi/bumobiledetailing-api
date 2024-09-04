@@ -14,6 +14,7 @@ import { responseCodeEnums } from '../../enums/responseCodeEnums';
 import { config } from '../../config';
 import {
   currencyFormatter,
+  dateFormat,
   getESTTime,
   sanitizePhoneNumber,
   sanitizeSMSAgentPrompt,
@@ -32,6 +33,8 @@ import { io } from '../../../index';
 import { SmsCronRepository } from '../../repositories/sms.cron.repository';
 import { statusEnums } from '../../enums/statusEnums';
 import OpenAI from 'openai';
+import { PreferencesRepository } from '../../repositories/preferences.repository';
+import dayjs from 'dayjs';
 @tagsAll(['SMSConversation'])
 export default class SmsConversationController {
   @request('get', '/conversation')
@@ -176,6 +179,7 @@ export default class SmsConversationController {
         contact: Joi.string().required(),
         name: Joi.string().required(),
         vehicleName: Joi.string().required(),
+        lastBooking: Joi.string().required(),
         agentId: Joi.number().required(),
       }).validateAsync(ctx.request.body);
 
@@ -189,8 +193,9 @@ export default class SmsConversationController {
       prompt = `${prompt}
       User Details:
       \`\`\`
-name: ${titleCase(`${body?.name}`)},
+customer name: ${titleCase(`${body?.name}`)},
 vehicle: ${body?.vehicleName},
+last booking: ${dayjs(body?.lastBooking).format(dateFormat)},
 coupon_code: ${agent?.coupon.code},
 discount: ${agent?.coupon.discountPercentage ? `${agent?.coupon.discountPercentage}%` : currencyFormatter.format(Number(agent?.coupon.discountAmount || 0))}
 \`\`\``;
@@ -201,8 +206,8 @@ discount: ${agent?.coupon.discountPercentage ? `${agent?.coupon.discountPercenta
         contact: sanitizePhoneNumber(body.contact),
         test: {
           name: body.name,
-          expiredAt: body.expiredAt,
-          moduleName: body.moduleName,
+          lastBooking: body.lastBooking,
+          vehicleName: body.vehicleName,
         },
         did: `${config.smsDID}`,
         lastMessage: agentResponse,
@@ -368,7 +373,7 @@ discount: ${agent?.coupon.discountPercentage ? `${agent?.coupon.discountPercenta
       io?.to(body.conversationId)?.emit('sms', {
         conversationId: body.conversationId,
         id: newMsg?.id,
-        to: body.dst,
+        to: `${body.dst}`,
         from: `${config.smsDID}`,
         message: body.message,
       });
@@ -434,9 +439,12 @@ discount: ${agent?.coupon.discountPercentage ? `${agent?.coupon.discountPercenta
           clicked: true,
         });
       }
-
-      const customer = conversation?.customer;
-
+      let customer = null;
+      if (conversation?.test) {
+        customer = conversation.test;
+      } else {
+        customer = await CustomerRepository.one(conversation.customer?.id);
+      }
       const smsMessages = conversation.smsMessages;
       const userMsg = await SmsMessageRepository.createSmsMessage({
         smsConversation: conversation,
@@ -462,13 +470,23 @@ discount: ${agent?.coupon.discountPercentage ? `${agent?.coupon.discountPercenta
       }
 
       if (
-        message?.toLowerCase()?.includes('stop') ||
-        message?.toLowerCase()?.includes('unsub')
+        (message?.toLowerCase()?.includes('stop') ||
+          message?.toLowerCase()?.includes('unsub')) &&
+        !conversation.test
       ) {
-        if (customer) {
+        if (customer?.preferences?.id) {
+          await PreferencesRepository.save({
+            id: customer?.preferences?.id,
+            marketing: false,
+          });
+        } else {
+          const pref = await PreferencesRepository.save({
+            marketing: false,
+            appointment: true,
+          });
           await CustomerRepository.save({
-            id: customer.id,
-            allowSMS: false,
+            id: customer?.id,
+            preferences: pref,
           });
         }
       }
@@ -515,12 +533,20 @@ discount: ${agent?.coupon.discountPercentage ? `${agent?.coupon.discountPercenta
       let prompt = sanitizeSMSAgentPrompt(agent.prompt, {
         coupon: agent.coupon,
       });
-
+      const vehicle = customer?.vehicles?.[0];
+      const vehicleName = vehicle
+        ? `${vehicle?.year || ''} ${vehicle?.make || ''} ${vehicle?.model || ''}`
+        : test?.vehicleName;
+      const cs = customer?.customerServices?.sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+      )?.[0];
       prompt = `${prompt}
       User Details:
       \`\`\`
-name: ${titleCase(`${customer?.firstName || test?.name}`)},
-
+customer name: ${titleCase(`${customer?.firstName || test?.name}`)},
+vehicle: ${vehicleName},
+last booking: ${cs?.createdAt ? dayjs(cs?.createdAt).format(dateFormat) : dayjs(test?.lastBooking).format(dateFormat)},
+coupon_code: ${agent?.coupon?.code},
 discount: ${agent.coupon?.discountPercentage ? `${agent.coupon?.discountPercentage}%` : currencyFormatter.format(Number(agent.coupon?.discountAmount || 0))}
 \`\`\``;
       const agentResponse = await OpenAIService.smsAgent({

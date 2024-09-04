@@ -45,7 +45,7 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
           id,
           statusId: statusEnums.ACTIVE,
         },
-        relations: ['preferences'],
+        relations: ['preferences', 'vehicles', 'customerServices'],
       });
       if (!customer) {
         throw new NotFoundError('Customer not found!');

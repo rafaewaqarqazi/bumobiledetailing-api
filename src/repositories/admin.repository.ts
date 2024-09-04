@@ -66,7 +66,10 @@ export const AdminRepository = AppDataSource?.getRepository(Admin).extend({
     if (exists) {
       throw new BadRequestError('Admin already exists');
     }
-    adminObj.password = bcrypt.hashSync(adminObj.password, config.hashSaltRounds);
+    adminObj.password = bcrypt.hashSync(
+      adminObj.password,
+      config.hashSaltRounds,
+    );
     const admin: Admin = await this.save(adminObj);
     if (!admin) {
       throw new BadRequestError('Could not create admin');
@@ -84,9 +87,10 @@ export const AdminRepository = AppDataSource?.getRepository(Admin).extend({
       newPassword?: string;
       currentPassword?: string;
       newEmail?: string;
-    }
+    },
   ): Promise<Admin> {
-    if (!Admin.hasId(adminObj)) throw new BadRequestError('Admin id not provided');
+    if (!Admin.hasId(adminObj))
+      throw new BadRequestError('Admin id not provided');
     if (adminObj.newEmail) {
       const exists: Admin = await this.findOne({
         where: { email: adminObj.newEmail },
@@ -98,7 +102,7 @@ export const AdminRepository = AppDataSource?.getRepository(Admin).extend({
       delete adminObj.newEmail;
     }
 
-    const admin: Admin = await this.findOne(adminObj.id);
+    const admin: Admin = await this.findOne({ where: { id: adminObj.id } });
     if (!admin) {
       throw new NotFoundError('Admin not found');
     }
@@ -113,7 +117,10 @@ export const AdminRepository = AppDataSource?.getRepository(Admin).extend({
       delete adminObj.currentPassword;
     }
     if (adminObj.newPassword) {
-      adminObj.password = bcrypt.hashSync(adminObj.newPassword, config.hashSaltRounds);
+      adminObj.password = bcrypt.hashSync(
+        adminObj.newPassword,
+        config.hashSaltRounds,
+      );
       delete adminObj.newPassword;
     }
     this.merge(admin, adminObj);

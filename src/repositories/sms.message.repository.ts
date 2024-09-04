@@ -36,13 +36,9 @@ export const SmsMessageRepository = AppDataSource.getRepository(
     if (!id) {
       return [];
     }
-    return await this.find({
-      where: {
-        smsConversation: id,
-      },
-      order: {
-        createdAt: 'DESC',
-      },
-    });
+    return await this.createQueryBuilder('smsMessages')
+      .where('smsMessages.smsConversation = :id', { id })
+      .orderBy('smsMessages.createdAt', 'DESC')
+      .getMany();
   },
 });

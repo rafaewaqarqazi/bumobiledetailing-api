@@ -17,7 +17,6 @@ export const handleSocket = (socket) => {
   //     });
   // });
   socket.on('join-room', ({ roomId }, callback) => {
-    console.log({ roomId });
     socket.join(roomId);
     if (callback) {
       SmsMessageRepository.listByConversationId(roomId)
