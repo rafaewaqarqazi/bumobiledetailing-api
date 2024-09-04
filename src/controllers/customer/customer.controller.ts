@@ -83,9 +83,24 @@ export default class CustomerController {
   public static async saveIntentCustomer(ctx: Context) {
     try {
       await Joi.object({
-        email: Joi.string().email().required(),
+        email: Joi.string().email().allow(null, ''),
+        name: Joi.string().allow(null, ''),
+        phone: Joi.string().allow(null, ''),
       }).validateAsync(ctx.request.body);
-      const body = ctx.request.body as Customer;
+      const body = ctx.request.body;
+      const name = body.name?.split(' ');
+      const firstName = name?.[0];
+      const lastName = name?.[1];
+      body.firstName = firstName;
+      body.lastName = lastName;
+      if (!body.phone && !body.email) {
+        return new Response(
+          ctx,
+          responseCodeEnums.BAD_REQUEST,
+          'Phone number or email is required',
+          null,
+        );
+      }
       const user = await CustomerRepository.createCustomer(body);
       return new Response(
         ctx,
