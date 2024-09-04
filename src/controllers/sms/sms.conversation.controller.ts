@@ -433,7 +433,7 @@ discount: ${agent?.coupon.discountPercentage ? `${agent?.coupon.discountPercenta
         );
       }
 
-      if (!conversation.test) {
+      if (!conversation.test && conversation?.smsCron?.id) {
         await SmsCronRepository.save({
           id: conversation.smsCron.id,
           clicked: true,
