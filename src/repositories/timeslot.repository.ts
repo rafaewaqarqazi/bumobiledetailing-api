@@ -89,10 +89,13 @@ export const TimeslotRepository = AppDataSource?.getRepository(
 
   async getTimeslotsByDate(date: string): Promise<Timeslot[]> {
     const dayOfWeek = dayjs(date).get('day');
+    console.log({ date });
     return await this.createQueryBuilder('timeslot')
       .where('timeslot.days like :dayOfWeek', { dayOfWeek: `%${dayOfWeek}%` })
-      .leftJoin('timeslot.schedules', 'schedule')
-      .andWhere('(schedule.id is null OR schedule.date != :date)', { date })
+      .andWhere(
+        'timeslot.id not in (select timeslotId from schedule where date = :date and timeslotId = timeslot.id)',
+        { date },
+      )
       .getMany();
   },
 });
