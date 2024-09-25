@@ -106,7 +106,9 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
           customerObj.preferences,
         );
       }
-      customerObj.phone = sanitizePhoneNumber(customerObj.phone);
+      if (customerObj.phone) {
+        customerObj.phone = sanitizePhoneNumber(customerObj.phone);
+      }
       const customer: Customer = await this.save(customerObj);
       if (!customer) {
         throw new BadRequestError('Could not create customer');
@@ -134,6 +136,9 @@ export const CustomerRepository = AppDataSource?.getRepository(Customer).extend(
         });
         if (exists) {
           throw new NotFoundError('Email already exist');
+        }
+        if (customerObj.phone) {
+          customerObj.phone = sanitizePhoneNumber(customerObj.phone);
         }
         customerObj.email = customerObj.newEmail;
         delete customerObj.newEmail;

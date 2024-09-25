@@ -23,6 +23,9 @@ class Package extends BaseEntity {
   @Column({ nullable: false })
   description: string;
 
+  @Column({ nullable: true })
+  includes: string;
+
   @Column({ nullable: false })
   price: string;
 
@@ -59,5 +62,6 @@ const packageSchema = Joi.object({
   packageAddOns: Joi.array(),
   image: Joi.string().required(),
   displayName: Joi.string().required(),
+  includes: Joi.string().allow(null, ''),
 });
 export { Package, packageSchema };

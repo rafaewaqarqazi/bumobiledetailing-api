@@ -64,11 +64,11 @@ export const getDiscountedPriceByPercentage = (price, discount) =>
   Number((Number(price) - Number((discount / 100) * Number(price))).toFixed(2));
 export const sanitizePhoneNumber = (phone: string) =>
   phone
-    .replace(/\s/, '')
-    .replace('(', '')
-    .replace(')', '')
-    .replace(/[-]/g, '')
-    .replace(/\s/g, '');
+    ?.replace(/\s/, '')
+    ?.replace('(', '')
+    ?.replace(')', '')
+    ?.replace(/[-]/g, '')
+    ?.replace(/\s/g, '');
 export const sanitizeSMSAgentPrompt = (
   prompt: string,
   data: {

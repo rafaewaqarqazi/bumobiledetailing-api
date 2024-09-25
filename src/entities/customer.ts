@@ -127,7 +127,7 @@ const customerSchema = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   email: Joi.string().email().required(),
-  phone: Joi.string().required(),
+  phone: Joi.string(),
   address: Joi.string(),
   city: Joi.string(),
   state: Joi.string(),
