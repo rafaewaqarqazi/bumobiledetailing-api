@@ -89,7 +89,6 @@ export const TimeslotRepository = AppDataSource?.getRepository(
 
   async getTimeslotsByDate(date: string): Promise<Timeslot[]> {
     const dayOfWeek = dayjs(date).get('day');
-    console.log({ date });
     return await this.createQueryBuilder('timeslot')
       .where('timeslot.days like :dayOfWeek', { dayOfWeek: `%${dayOfWeek}%` })
       .andWhere(

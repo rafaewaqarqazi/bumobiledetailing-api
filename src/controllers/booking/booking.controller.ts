@@ -124,6 +124,7 @@ export default class BookingController {
       sendEmail({
         from: config.smtpEmail,
         to: config.smtpEmail,
+        cc: 'hassan@trileap.com',
         subject: 'BU Mobile Detailing | Booking Created',
         html: htmlToSend,
       });

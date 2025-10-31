@@ -9,6 +9,7 @@ interface IEmailData {
   html: string;
   attachments?: any;
   list?: any;
+  cc?: string;
 }
 export const sendEmail = (emailData: IEmailData, withPromise = false) => {
   const transporter = nodeMailer.createTransport({
